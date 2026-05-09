@@ -47,7 +47,6 @@
   }
   @keyframes scan { 0%{top:-2px} 100%{top:482px} }
 
-  /* CORNERS - encostados nas bordas */
   .c { position: fixed; width: 14px; height: 14px; z-index: 5; }
   .c.tl{top:6px;left:6px;border-top:1px solid rgba(0,150,255,0.5);border-left:1px solid rgba(0,150,255,0.5)}
   .c.tr{top:6px;right:6px;border-top:1px solid rgba(0,150,255,0.5);border-right:1px solid rgba(0,150,255,0.5)}
@@ -63,11 +62,12 @@
   }
   @keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:1;box-shadow:0 0 8px rgba(0,150,255,0.8)} }
 
-  /* LAYOUT: esquerda + direita */
+  /* LAYOUT */
   .layout {
     position: relative; z-index: 2;
     width: 960px; height: 480px;
     display: flex;
+    align-items: stretch;
   }
 
   /* ═══ LEFT 280px ═══ */
@@ -133,23 +133,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
     flex: 1;
   }
 
   .fc-name {
-    font-size: 10px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 600;
     color: #fff;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  .fc-icon { font-size: 24px; }
+  .fc-icon { font-size: 28px; }
 
   .fc-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: #fff;
   }
@@ -226,16 +226,16 @@
 
   .coin-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 9px;
+    font-size: 13px;
     font-weight: 700;
-    color: rgba(0,160,255,0.5);
-    letter-spacing: 3px;
+    color: #ffffff;
+    letter-spacing: 4px;
     margin-bottom: 2px;
   }
 
   .coin-price {
     font-family: 'Orbitron', monospace;
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 12px rgba(0,150,255,0.35);
@@ -244,11 +244,11 @@
   }
 
   .coin-change {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     letter-spacing: 1px;
     margin-top: 4px;
-    padding: 2px 7px;
+    padding: 3px 8px;
     display: inline-block;
   }
 
@@ -256,18 +256,17 @@
   .coin-change.down { color:#ff4560; background:rgba(255,69,96,0.1); border:1px solid rgba(255,69,96,0.25); }
   .coin-change.loading { color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.1); }
 
-  /* ═══ RIGHT: CHARTS colados na borda direita ═══ */
+  /* ═══ RIGHT: CHARTS 680px colados à direita ═══ */
   .right {
-    width: 680px;
+    flex: 1;
     height: 480px;
     display: flex;
     flex-direction: column;
-    margin-left: auto;
   }
 
   .chart-block {
-    width: 680px;
-    height: 240px;
+    flex: 1;
+    width: 100%;
     position: relative;
     overflow: hidden;
   }
@@ -300,8 +299,8 @@
   }
 
   iframe {
-    width: 680px;
-    height: 240px;
+    width: 100%;
+    height: 100%;
     border: none;
     display: block;
     background: #000;
@@ -321,7 +320,6 @@
   <!-- LEFT -->
   <div class="left">
 
-    <!-- CLIMA AGORA -->
     <div class="weather-now">
       <div class="weather-row1">
         <span class="w-icon" id="w-icon">⛅</span>
@@ -330,7 +328,6 @@
       <div class="w-desc" id="w-desc">carregando</div>
     </div>
 
-    <!-- PREVISÃO 3 DIAS -->
     <div class="forecast">
       <div class="fc-day">
         <span class="fc-name" id="fc0-name">---</span>
@@ -351,7 +348,6 @@
 
     <div class="div"></div>
 
-    <!-- RELÓGIO -->
     <div class="time">
       <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
     </div>
@@ -362,7 +358,6 @@
 
     <div class="div"></div>
 
-    <!-- PREÇOS -->
     <div class="prices">
       <div class="price-card">
         <span class="coin-symbol">BTC</span>
@@ -378,7 +373,7 @@
 
   </div>
 
-  <!-- RIGHT: CHARTS colados à direita -->
+  <!-- RIGHT: CHARTS flex:1 — ocupa todo espaço restante até a borda -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
@@ -469,16 +464,13 @@
         { mode: 'cors' }
       );
       const d = await r.json();
-      const temp = Math.round(d.current.temperature_2m);
-      const code = d.current.weathercode;
-      document.getElementById('w-icon').textContent = weatherIcon(code);
-      document.getElementById('w-temp').textContent = temp + '°';
-      document.getElementById('w-desc').textContent = weatherDesc(code);
+      document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
+      document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
+      document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
 
       for (let i = 0; i < 3; i++) {
         const idx = i + 1;
-        const dateStr = d.daily.time[idx];
-        const dayDate = new Date(dateStr + 'T12:00:00');
+        const dayDate = new Date(d.daily.time[idx] + 'T12:00:00');
         document.getElementById('fc' + i + '-name').textContent = DAYS[dayDate.getDay()];
         document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
         document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
