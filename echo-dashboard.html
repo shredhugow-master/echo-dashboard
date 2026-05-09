@@ -40,31 +40,260 @@
 
   .scanline {
     position: fixed;
-    left: 0; width: 960px; height: 2px;
+    left: 0;
+    width: 960px;
+    height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0,150,255,0.2), transparent);
     animation: scan 6s linear infinite;
     z-index: 1;
   }
+
   @keyframes scan { 0%{top:-2px} 100%{top:482px} }
 
-  .c { position: fixed; width: 14px; height: 14px; z-index: 5; }
+  .c { position: fixed; width: 14px; height: 14px; z-index: 80; }
   .c.tl{top:6px;left:6px;border-top:1px solid rgba(0,150,255,0.5);border-left:1px solid rgba(0,150,255,0.5)}
   .c.tr{top:6px;right:6px;border-top:1px solid rgba(0,150,255,0.5);border-right:1px solid rgba(0,150,255,0.5)}
   .c.bl{bottom:6px;left:6px;border-bottom:1px solid rgba(0,150,255,0.5);border-left:1px solid rgba(0,150,255,0.5)}
   .c.br{bottom:6px;right:6px;border-bottom:1px solid rgba(0,150,255,0.5);border-right:1px solid rgba(0,150,255,0.5)}
 
-  /* ═══ LAYOUT ═══ */
   .layout {
     position: relative;
     z-index: 2;
     width: 960px;
     height: 480px;
+    isolation: isolate;
   }
 
-  /* ═══ LEFT 290px ═══ */
+  /* ═══ RIGHT ORIGINAL — 670px ═══ */
+  .right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 670px;
+    height: 480px;
+    overflow: hidden;
+    z-index: 4;
+    background: #000;
+  }
+
+  .chart-block {
+    width: 670px;
+    height: 240px;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .chart-block:first-child {
+    border-bottom: 1px solid rgba(0,100,200,0.1);
+  }
+
+  .chart-tag {
+    position: absolute;
+    top: 7px;
+    left: 10px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+
+  .tag-symbol {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(0,150,255,0.35);
+    letter-spacing: 3px;
+  }
+
+  .tag-tf {
+    font-size: 8px;
+    color: rgba(0,120,200,0.3);
+    letter-spacing: 2px;
+    border: 1px solid rgba(0,100,200,0.15);
+    padding: 1px 4px;
+    font-family: 'Orbitron', monospace;
+  }
+
+  iframe {
+    width: 670px;
+    height: 240px;
+    border: none;
+    display: block;
+    background: #000;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ═══ FEAR & GREED SOBREPOSTO — NÃO RESERVA ESPAÇO ═══ */
+  .fg-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 74px;
+    height: 480px;
+    z-index: 60;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(90deg,
+        rgba(0,0,0,0.00) 0%,
+        rgba(0,8,25,0.55) 26%,
+        rgba(0,12,36,0.92) 62%,
+        rgba(0,14,42,0.98) 100%
+      );
+    border-left: 1px solid rgba(0,130,255,0.16);
+    transform: translateZ(10px);
+    -webkit-transform: translateZ(10px);
+  }
+
+  .fg-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(0,130,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,130,255,0.035) 1px, transparent 1px);
+    background-size: 18px 18px;
+    opacity: 0.7;
+  }
+
+  .fg-box {
+    position: relative;
+    z-index: 2;
+    width: 54px;
+    height: 430px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  .fg-top {
+    font-family: 'Orbitron', monospace;
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 1.15;
+    color: rgba(255,95,70,0.82);
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(255,60,30,0.28);
+  }
+
+  .fg-tube {
+    width: 20px;
+    height: 300px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,130,255,0.42);
+    background: rgba(0,20,55,0.78);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      inset 0 0 10px rgba(0,0,0,0.9),
+      0 0 12px rgba(0,120,255,0.18);
+  }
+
+  .fg-tube::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 9px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.12), transparent 35%, rgba(0,0,0,0.2));
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .fg-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    border-radius: 0 0 12px 12px;
+    background: linear-gradient(
+      to top,
+      #005bff 0%,
+      #0099ff 20%,
+      #00d5ff 38%,
+      #00ffb7 56%,
+      #66ff55 70%,
+      #ffcc00 84%,
+      #ff6a00 93%,
+      #ff1f00 100%
+    );
+    transition: height 1.4s ease;
+    box-shadow: 0 0 12px rgba(0,180,255,0.5);
+  }
+
+  .fg-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 2px;
+    right: 2px;
+    height: 7px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.35);
+    animation: fgShimmer 2s ease-in-out infinite;
+  }
+
+  @keyframes fgShimmer {
+    0%,100% { opacity: .25; transform: scaleX(.72); }
+    50% { opacity: .85; transform: scaleX(1); }
+  }
+
+  .fg-bulb {
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,130,255,0.42);
+    background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #0044aa);
+    box-shadow: 0 0 14px rgba(0,130,255,0.55);
+  }
+
+  .fg-bottom {
+    font-family: 'Orbitron', monospace;
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 1.15;
+    color: rgba(0,160,255,0.78);
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba(0,120,255,0.28);
+  }
+
+  .fg-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 10px rgba(0,160,255,0.7);
+    margin-top: 2px;
+  }
+
+  .fg-class {
+    font-size: 6px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.58);
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.15;
+    max-width: 54px;
+  }
+
+  /* ═══ LEFT ORIGINAL — 290px ═══ */
   .left {
     position: absolute;
-    left: 0; top: 0;
+    left: 0;
+    top: 0;
     width: 290px;
     height: 480px;
     display: flex;
@@ -73,204 +302,197 @@
     align-items: center;
     padding: 10px 14px;
     border-right: 1px solid rgba(0,100,200,0.2);
+    z-index: 8;
   }
 
-  /* WEATHER */
-  .weather-now { width:100%; display:flex; flex-direction:column; align-items:center; margin-top:4px; }
-  .weather-row1 { display:flex; align-items:center; justify-content:center; gap:8px; }
-  .w-icon { font-size:38px; line-height:1; }
-  .w-temp { font-family:'Orbitron',monospace; font-size:44px; font-weight:900; color:#fff; text-shadow:0 0 15px rgba(0,150,255,0.6); line-height:1; }
-  .w-desc { font-size:11px; font-weight:300; color:#fff; letter-spacing:2px; text-transform:uppercase; margin-top:3px; text-align:center; }
-
-  .forecast { width:100%; display:flex; justify-content:space-around; align-items:flex-start; margin-top:6px; }
-  .fc-day { display:flex; flex-direction:column; align-items:center; gap:2px; }
-  .fc-name { font-size:11px; font-weight:600; color:#fff; letter-spacing:2px; text-transform:uppercase; }
-  .fc-icon { font-size:24px; line-height:1.2; }
-  .fc-temp { font-family:'Orbitron',monospace; font-size:14px; font-weight:700; color:#fff; }
-
-  /* CLOCK */
-  .clock-section { width:100%; display:flex; flex-direction:column; align-items:center; }
-  .time { font-family:'Orbitron',monospace; font-size:78px; font-weight:900; color:#fff; line-height:1; letter-spacing:-3px; text-shadow:0 0 25px rgba(0,150,255,0.9),0 0 60px rgba(0,100,200,0.4); }
-  .colon { color:rgba(0,160,255,0.7); animation:blink 1s step-end infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
-  .date-block { text-align:center; margin-top:2px; }
-  .date-text { font-size:16px; font-weight:400; color:#fff; letter-spacing:2px; text-transform:uppercase; }
-  .day-text { font-size:10px; font-weight:200; color:rgba(255,255,255,0.45); letter-spacing:4px; text-transform:uppercase; margin-top:1px; }
-
-  /* PRICES */
-  .prices { width:100%; display:flex; flex-direction:column; gap:6px; margin-bottom:4px; }
-  .price-card { background:rgba(0,40,90,0.22); border:1px solid rgba(0,100,200,0.2); padding:6px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; position:relative; }
-  .price-card::before { content:''; position:absolute; left:0; top:15%; bottom:15%; width:2px; background:linear-gradient(transparent,rgba(0,150,255,0.7),transparent); }
-  .price-left { display:flex; flex-direction:column; align-items:flex-start; gap:1px; }
-  .coin-symbol { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:#fff; letter-spacing:3px; }
-  .coin-price { font-family:'Orbitron',monospace; font-size:28px; font-weight:900; color:#fff; text-shadow:0 0 12px rgba(0,150,255,0.4); line-height:1; letter-spacing:-1.5px; }
-  .coin-change { font-size:14px; font-weight:700; letter-spacing:0.5px; padding:4px 8px; white-space:nowrap; }
-  .coin-change.up { color:#00e5a0; background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.3); }
-  .coin-change.down { color:#ff4560; background:rgba(255,69,96,0.1); border:1px solid rgba(255,69,96,0.3); }
-  .coin-change.loading { color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.1); }
-
-  /* ═══ CHARTS 600px ═══ */
-  .charts {
-    position: absolute;
-    left: 290px; top: 0;
-    width: 600px;
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .chart-block {
-    width: 600px;
-    height: 240px;
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .chart-block:first-child { border-bottom: 1px solid rgba(0,100,200,0.1); }
-
-  .chart-tag { position:absolute; top:7px; left:10px; z-index:10; display:flex; align-items:center; gap:6px; pointer-events:none; }
-  .tag-symbol { font-family:'Orbitron',monospace; font-size:9px; font-weight:700; color:rgba(0,150,255,0.35); letter-spacing:3px; }
-  .tag-tf { font-size:8px; color:rgba(0,120,200,0.3); letter-spacing:2px; border:1px solid rgba(0,100,200,0.15); padding:1px 4px; font-family:'Orbitron',monospace; }
-
-  iframe { width:600px; height:240px; border:none; display:block; background:#000; }
-
-  /* ═══ THERMOMETER — Fear & Greed 70px à direita ═══ */
-  .thermo-panel {
-    position: absolute;
-    right: 0; top: 0;
-    width: 70px;
-    height: 480px;
+  .weather-now {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 4px;
+  }
+
+  .weather-row1 {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 12px 0;
-    border-left: 1px solid rgba(0,100,200,0.15);
-    gap: 6px;
+    gap: 8px;
   }
 
-  /* LABEL TOPO */
-  .thermo-label-top {
+  .w-icon { font-size: 38px; line-height: 1; }
+
+  .w-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 7px;
-    font-weight: 700;
-    color: rgba(255,100,80,0.7);
-    letter-spacing: 1px;
-    text-align: center;
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
-
-  /* TUBO DO TERMÔMETRO */
-  .thermo-tube {
-    width: 22px;
-    height: 320px;
-    border-radius: 11px;
-    background: rgba(0,20,50,0.6);
-    border: 1px solid rgba(0,100,200,0.3);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  /* LÍQUIDO GRADIENTE */
-  .thermo-fill {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0 0 11px 11px;
-    transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(
-      to top,
-      #0066ff 0%,
-      #0099ff 20%,
-      #00ccff 40%,
-      #00ffcc 60%,
-      #00ff88 75%,
-      #ffcc00 85%,
-      #ff6600 92%,
-      #ff2200 100%
-    );
-  }
-
-  /* ANIMAÇÃO PULSANTE NO TOPO DO LÍQUIDO */
-  .thermo-fill::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 8px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 4px;
-    animation: shimmer 2s ease-in-out infinite;
-  }
-
-  @keyframes shimmer {
-    0%, 100% { opacity: 0.2; transform: scaleX(0.8); }
-    50% { opacity: 0.8; transform: scaleX(1); }
-  }
-
-  /* BOLINHA BASE */
-  .thermo-bulb {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: 1px solid rgba(0,100,200,0.3);
-    background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #0044aa);
-    flex-shrink: 0;
-    position: relative;
-    animation: bulbPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes bulbPulse {
-    0%, 100% { box-shadow: 0 0 6px rgba(0,100,255,0.4); }
-    50% { box-shadow: 0 0 16px rgba(0,150,255,0.8); }
-  }
-
-  /* LABEL BASE */
-  .thermo-label-bot {
-    font-family: 'Orbitron', monospace;
-    font-size: 7px;
-    font-weight: 700;
-    color: rgba(0,150,255,0.7);
-    letter-spacing: 1px;
-    text-align: center;
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
-
-  /* NÚMERO DO ÍNDICE */
-  .thermo-value {
-    font-family: 'Orbitron', monospace;
-    font-size: 16px;
+    font-size: 44px;
     font-weight: 900;
     color: #fff;
-    text-shadow: 0 0 10px rgba(0,150,255,0.6);
-    text-align: center;
+    text-shadow: 0 0 15px rgba(0,150,255,0.6);
     line-height: 1;
   }
 
-  /* CLASSIFICAÇÃO */
-  .thermo-class {
-    font-family: 'Exo 2', sans-serif;
-    font-size: 7px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 1px;
-    text-align: center;
+  .w-desc {
+    font-size: 11px;
+    font-weight: 300;
+    color: #fff;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    line-height: 1.3;
-    max-width: 60px;
+    margin-top: 3px;
+    text-align: center;
   }
 
-  /* MARCAÇÕES NO TUBO */
-  .thermo-tick {
+  .forecast {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    margin-top: 6px;
+  }
+
+  .fc-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .fc-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .fc-icon { font-size: 24px; line-height: 1.2; }
+
+  .fc-temp {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .clock-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .time {
+    font-family: 'Orbitron', monospace;
+    font-size: 78px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -3px;
+    text-shadow: 0 0 25px rgba(0,150,255,0.9), 0 0 60px rgba(0,100,200,0.4);
+  }
+
+  .colon {
+    color: rgba(0,160,255,0.7);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
+
+  .date-block { text-align: center; margin-top: 2px; }
+
+  .date-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .day-text {
+    font-size: 10px;
+    font-weight: 200;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .prices {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .price-card {
+    background: rgba(0,40,90,0.22);
+    border: 1px solid rgba(0,100,200,0.2);
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: relative;
+  }
+
+  .price-card::before {
+    content: '';
     position: absolute;
-    right: -6px;
-    width: 5px;
-    height: 1px;
-    background: rgba(0,100,200,0.4);
+    left: 0;
+    top: 15%;
+    bottom: 15%;
+    width: 2px;
+    background: linear-gradient(transparent, rgba(0,150,255,0.7), transparent);
+  }
+
+  .price-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+
+  .coin-symbol {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 3px;
+  }
+
+  .coin-price {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0,150,255,0.4);
+    line-height: 1;
+    letter-spacing: -1.5px;
+  }
+
+  .coin-change {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+
+  .coin-change.up {
+    color:#00e5a0;
+    background:rgba(0,229,160,0.1);
+    border:1px solid rgba(0,229,160,0.3);
+  }
+
+  .coin-change.down {
+    color:#ff4560;
+    background:rgba(255,69,96,0.1);
+    border:1px solid rgba(255,69,96,0.3);
+  }
+
+  .coin-change.loading {
+    color:rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.1);
   }
 </style>
 </head>
@@ -283,8 +505,8 @@
 
 <div class="layout">
 
-  <!-- LEFT -->
   <div class="left">
+
     <div style="width:100%;">
       <div class="weather-now">
         <div class="weather-row1">
@@ -293,15 +515,30 @@
         </div>
         <div class="w-desc" id="w-desc">carregando</div>
       </div>
+
       <div class="forecast">
-        <div class="fc-day"><span class="fc-name" id="fc0-name">---</span><span class="fc-icon" id="fc0-icon">⛅</span><span class="fc-temp" id="fc0-temp">--°</span></div>
-        <div class="fc-day"><span class="fc-name" id="fc1-name">---</span><span class="fc-icon" id="fc1-icon">⛅</span><span class="fc-temp" id="fc1-temp">--°</span></div>
-        <div class="fc-day"><span class="fc-name" id="fc2-name">---</span><span class="fc-icon" id="fc2-icon">⛅</span><span class="fc-temp" id="fc2-temp">--°</span></div>
+        <div class="fc-day">
+          <span class="fc-name" id="fc0-name">---</span>
+          <span class="fc-icon" id="fc0-icon">⛅</span>
+          <span class="fc-temp" id="fc0-temp">--°</span>
+        </div>
+        <div class="fc-day">
+          <span class="fc-name" id="fc1-name">---</span>
+          <span class="fc-icon" id="fc1-icon">⛅</span>
+          <span class="fc-temp" id="fc1-temp">--°</span>
+        </div>
+        <div class="fc-day">
+          <span class="fc-name" id="fc2-name">---</span>
+          <span class="fc-icon" id="fc2-icon">⛅</span>
+          <span class="fc-temp" id="fc2-temp">--°</span>
+        </div>
       </div>
     </div>
 
     <div class="clock-section">
-      <div class="time"><span id="h">00</span><span class="colon">:</span><span id="m">00</span></div>
+      <div class="time">
+        <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
+      </div>
       <div class="date-block">
         <div class="date-text" id="date">01 JAN 2026</div>
         <div class="day-text" id="day">SEGUNDA</div>
@@ -324,39 +561,44 @@
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
+
   </div>
 
-  <!-- CHARTS -->
-  <div class="charts">
+  <div class="right">
+
     <div class="chart-block">
-      <div class="chart-tag"><span class="tag-symbol">BTCUSDT</span><span class="tag-tf">1H</span></div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <div class="chart-tag">
+        <span class="tag-symbol">BTCUSDT</span>
+        <span class="tag-tf">1H</span>
+      </div>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
+
     <div class="chart-block">
-      <div class="chart-tag"><span class="tag-symbol">ETHUSDT</span><span class="tag-tf">1H</span></div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
-    </div>
-  </div>
-
-  <!-- THERMOMETER -->
-  <div class="thermo-panel">
-    <div class="thermo-label-top">GANÂNCIA<br>EXTREMA</div>
-
-    <div class="thermo-tube" id="thermo-tube">
-      <!-- marcações -->
-      <div class="thermo-tick" style="bottom:80%;"></div>
-      <div class="thermo-tick" style="bottom:60%;"></div>
-      <div class="thermo-tick" style="bottom:40%;"></div>
-      <div class="thermo-tick" style="bottom:20%;"></div>
-      <div class="thermo-fill" id="thermo-fill" style="height:50%;"></div>
+      <div class="chart-tag">
+        <span class="tag-symbol">ETHUSDT</span>
+        <span class="tag-tf">1H</span>
+      </div>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
 
-    <div class="thermo-bulb" id="thermo-bulb"></div>
+    <div class="fg-overlay">
+      <div class="fg-box">
+        <div class="fg-top">GANÂNCIA<br>EXTREMA</div>
 
-    <div class="thermo-label-bot">MEDO<br>EXTREMO</div>
+        <div class="fg-tube">
+          <div class="fg-fill" id="fg-fill"></div>
+        </div>
 
-    <div class="thermo-value" id="fg-value">--</div>
-    <div class="thermo-class" id="fg-class">carregando</div>
+        <div class="fg-bulb" id="fg-bulb"></div>
+
+        <div class="fg-bottom">MEDO<br>EXTREMO</div>
+
+        <div class="fg-value" id="fg-value">--</div>
+        <div class="fg-class" id="fg-class">carregando</div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -370,39 +612,100 @@
     const n = new Date();
     document.getElementById('h').textContent = String(n.getHours()).padStart(2,'0');
     document.getElementById('m').textContent = String(n.getMinutes()).padStart(2,'0');
-    document.getElementById('date').textContent = String(n.getDate()).padStart(2,'0') + ' ' + MONTHS[n.getMonth()] + ' ' + n.getFullYear();
+    document.getElementById('date').textContent =
+      String(n.getDate()).padStart(2,'0') + ' ' + MONTHS[n.getMonth()] + ' ' + n.getFullYear();
     document.getElementById('day').textContent = DAYS_FULL[n.getDay()];
   }
 
   async function fetchPrices() {
     try {
-      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true', { mode:'cors' });
+      const r = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
+        { mode: 'cors' }
+      );
+
       const d = await r.json();
-      const btcP = d.bitcoin.usd, btcC = d.bitcoin.usd_24h_change;
-      const ethP = d.ethereum.usd, ethC = d.ethereum.usd_24h_change;
+
+      const btcP = d.bitcoin.usd;
+      const btcC = d.bitcoin.usd_24h_change;
+      const ethP = d.ethereum.usd;
+      const ethC = d.ethereum.usd_24h_change;
+
       document.getElementById('btc-p').textContent = '$' + Math.round(btcP).toLocaleString('en-US');
       const bc = document.getElementById('btc-c');
-      bc.textContent = (btcC>=0?'+':'') + btcC.toFixed(2) + '%';
-      bc.className = 'coin-change ' + (btcC>=0?'up':'down');
+      bc.textContent = (btcC >= 0 ? '+' : '') + btcC.toFixed(2) + '%';
+      bc.className = 'coin-change ' + (btcC >= 0 ? 'up' : 'down');
+
       document.getElementById('eth-p').textContent = '$' + Math.round(ethP).toLocaleString('en-US');
       const ec = document.getElementById('eth-c');
-      ec.textContent = (ethC>=0?'+':'') + ethC.toFixed(2) + '%';
-      ec.className = 'coin-change ' + (ethC>=0?'up':'down');
-    } catch(e) {}
+      ec.textContent = (ethC >= 0 ? '+' : '') + ethC.toFixed(2) + '%';
+      ec.className = 'coin-change ' + (ethC >= 0 ? 'up' : 'down');
+
+    } catch(e) {
+      console.log('crypto error', e);
+    }
   }
 
-  // FEAR & GREED
+  function weatherIcon(code) {
+    if (code === 0) return '☀️';
+    if (code <= 2) return '⛅';
+    if (code <= 3) return '☁️';
+    if (code <= 48) return '🌫️';
+    if (code <= 57) return '🌦️';
+    if (code <= 67) return '🌧️';
+    if (code <= 77) return '🌨️';
+    if (code <= 82) return '🌧️';
+    if (code <= 99) return '⛈️';
+    return '🌡️';
+  }
+
+  function weatherDesc(code) {
+    if (code === 0) return 'CÉU LIMPO';
+    if (code <= 2) return 'PARC. NUBLADO';
+    if (code <= 3) return 'NUBLADO';
+    if (code <= 48) return 'NEBLINA';
+    if (code <= 57) return 'GAROA';
+    if (code <= 67) return 'CHUVA';
+    if (code <= 77) return 'NEVE';
+    if (code <= 82) return 'CHUVA FORTE';
+    if (code <= 99) return 'TEMPESTADE';
+    return 'VARIÁVEL';
+  }
+
+  async function fetchWeather() {
+    try {
+      const r = await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=-2.53&longitude=-44.30&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max&timezone=America%2FFortaleza&forecast_days=4',
+        { mode: 'cors' }
+      );
+
+      const d = await r.json();
+
+      document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
+      document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
+      document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
+
+      for (let i = 0; i < 3; i++) {
+        const idx = i + 1;
+        const dayDate = new Date(d.daily.time[idx] + 'T12:00:00');
+        document.getElementById('fc' + i + '-name').textContent = DAYS[dayDate.getDay()];
+        document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
+        document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
+      }
+
+    } catch(e) {
+      console.log('weather error', e);
+    }
+  }
+
   async function fetchFearGreed() {
     try {
-      const r = await fetch('https://api.alternative.me/fng/?limit=1', { mode:'cors' });
+      const r = await fetch('https://api.alternative.me/fng/?limit=1', { mode: 'cors' });
       const d = await r.json();
-      const value = parseInt(d.data[0].value);
+
+      const value = parseInt(d.data[0].value, 10);
       const classification = d.data[0].value_classification;
 
-      // Atualiza número
-      document.getElementById('fg-value').textContent = value;
-
-      // Traduz classificação
       const labels = {
         'Extreme Fear': 'MEDO EXTREMO',
         'Fear': 'MEDO',
@@ -410,68 +713,37 @@
         'Greed': 'GANÂNCIA',
         'Extreme Greed': 'GANÂNCIA EXTREMA'
       };
-      document.getElementById('fg-class').textContent = labels[classification] || classification;
 
-      // Atualiza altura do líquido (0-100 → 0%-100%)
-      document.getElementById('thermo-fill').style.height = value + '%';
+      const fgValue = document.getElementById('fg-value');
+      const fgClass = document.getElementById('fg-class');
+      const fgFill = document.getElementById('fg-fill');
+      const fgBulb = document.getElementById('fg-bulb');
 
-      // Muda cor da bolinha baseado no valor
-      const bulb = document.getElementById('thermo-bulb');
-      let bulbColor, glowColor;
+      fgValue.textContent = value;
+      fgClass.textContent = labels[classification] || classification;
+      fgFill.style.height = value + '%';
+
       if (value <= 20) {
-        bulbColor = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #0044aa)';
-        glowColor = 'rgba(0,100,255,0.8)';
+        fgBulb.style.background = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #0044aa)';
+        fgBulb.style.boxShadow = '0 0 14px rgba(0,100,255,0.75)';
       } else if (value <= 40) {
-        bulbColor = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #0099cc)';
-        glowColor = 'rgba(0,150,200,0.8)';
+        fgBulb.style.background = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #0088cc)';
+        fgBulb.style.boxShadow = '0 0 14px rgba(0,160,220,0.75)';
       } else if (value <= 60) {
-        bulbColor = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #00aa88)';
-        glowColor = 'rgba(0,200,150,0.8)';
+        fgBulb.style.background = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #00aa88)';
+        fgBulb.style.boxShadow = '0 0 14px rgba(0,220,170,0.75)';
       } else if (value <= 80) {
-        bulbColor = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #cc6600)';
-        glowColor = 'rgba(255,150,0,0.8)';
+        fgBulb.style.background = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #cc6600)';
+        fgBulb.style.boxShadow = '0 0 14px rgba(255,150,0,0.75)';
       } else {
-        bulbColor = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.3), #cc2200)';
-        glowColor = 'rgba(255,50,0,0.8)';
+        fgBulb.style.background = 'radial-gradient(circle at 40% 35%, rgba(255,255,255,0.35), #cc2200)';
+        fgBulb.style.boxShadow = '0 0 14px rgba(255,60,0,0.75)';
       }
-      bulb.style.background = bulbColor;
-      bulb.style.setProperty('--glow', glowColor);
 
     } catch(e) {
       document.getElementById('fg-value').textContent = '--';
       document.getElementById('fg-class').textContent = 'OFFLINE';
     }
-  }
-
-  function wIcon(c) {
-    if (c===0) return '☀️'; if (c<=2) return '⛅'; if (c<=3) return '☁️';
-    if (c<=48) return '🌫️'; if (c<=57) return '🌦️'; if (c<=67) return '🌧️';
-    if (c<=82) return '🌧️'; if (c<=99) return '⛈️'; return '🌡️';
-  }
-
-  function wDesc(c) {
-    if (c===0) return 'CÉU LIMPO'; if (c<=2) return 'PARC. NUBLADO';
-    if (c<=3) return 'NUBLADO'; if (c<=48) return 'NEBLINA';
-    if (c<=57) return 'GAROA'; if (c<=67) return 'CHUVA';
-    if (c<=82) return 'CHUVA FORTE'; if (c<=99) return 'TEMPESTADE';
-    return 'VARIÁVEL';
-  }
-
-  async function fetchWeather() {
-    try {
-      const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-2.53&longitude=-44.30&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max&timezone=America%2FFortaleza&forecast_days=4', { mode:'cors' });
-      const d = await r.json();
-      document.getElementById('w-icon').textContent = wIcon(d.current.weathercode);
-      document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
-      document.getElementById('w-desc').textContent = wDesc(d.current.weathercode);
-      for (let i = 0; i < 3; i++) {
-        const idx = i + 1;
-        const dd = new Date(d.daily.time[idx] + 'T12:00:00');
-        document.getElementById('fc'+i+'-name').textContent = DAYS[dd.getDay()];
-        document.getElementById('fc'+i+'-icon').textContent = wIcon(d.daily.weathercode[idx]);
-        document.getElementById('fc'+i+'-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
-      }
-    } catch(e) {}
   }
 
   updateClock();
@@ -482,7 +754,7 @@
   setInterval(updateClock, 1000);
   setInterval(fetchPrices, 60000);
   setInterval(fetchWeather, 600000);
-  setInterval(fetchFearGreed, 300000); // atualiza a cada 5 min
+  setInterval(fetchFearGreed, 300000);
 </script>
 </body>
 </html>
