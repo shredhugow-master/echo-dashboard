@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=960, height=480, initial-scale=1.0">
 <title>Echo Dashboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@200;300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@200;300;400;600&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -20,11 +20,11 @@
 
   .bg {
     position: fixed;
-    top: 0; left: 0;
+    inset: 0;
     width: 960px; height: 480px;
     background:
-      radial-gradient(ellipse at 15% 50%, rgba(0,60,140,0.7) 0%, transparent 55%),
-      radial-gradient(ellipse at 85% 20%, rgba(0,80,160,0.25) 0%, transparent 45%),
+      radial-gradient(ellipse at 12% 50%, rgba(0,60,140,0.65) 0%, transparent 50%),
+      radial-gradient(ellipse at 88% 80%, rgba(0,40,100,0.3) 0%, transparent 45%),
       linear-gradient(135deg, #000000 0%, #00091a 60%, #000d24 100%);
     z-index: 0;
   }
@@ -34,111 +34,174 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0,100,220,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,100,220,0.04) 1px, transparent 1px);
+      linear-gradient(rgba(0,100,220,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,100,220,0.035) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   .scanline {
     position: fixed;
     left: 0; width: 960px; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.25), transparent);
-    animation: scan 5s linear infinite;
+    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.2), transparent);
+    animation: scan 6s linear infinite;
     z-index: 1;
   }
+  @keyframes scan { 0% { top: -2px; } 100% { top: 482px; } }
 
-  @keyframes scan {
-    0% { top: -2px; }
-    100% { top: 482px; }
+  /* CORNERS */
+  .c { position: fixed; width: 12px; height: 12px; z-index: 5; }
+  .c.tl { top:6px; left:6px; border-top:1px solid rgba(0,150,255,0.4); border-left:1px solid rgba(0,150,255,0.4); }
+  .c.tr { top:6px; right:6px; border-top:1px solid rgba(0,150,255,0.4); border-right:1px solid rgba(0,150,255,0.4); }
+  .c.bl { bottom:6px; left:6px; border-bottom:1px solid rgba(0,150,255,0.4); border-left:1px solid rgba(0,150,255,0.4); }
+  .c.br { bottom:6px; right:6px; border-bottom:1px solid rgba(0,150,255,0.4); border-right:1px solid rgba(0,150,255,0.4); }
+
+  .dot {
+    position: fixed; bottom:10px; left:118px;
+    width:4px; height:4px; border-radius:50%;
+    background: rgba(0,150,255,0.5);
+    animation: pulse 2.5s ease-in-out infinite;
+    z-index: 5;
   }
+  @keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:1;box-shadow:0 0 8px rgba(0,150,255,0.8)} }
 
-  /* LAYOUT */
+  /* MAIN LAYOUT */
   .layout {
-    position: relative;
-    z-index: 2;
-    width: 960px;
-    height: 480px;
+    position: relative; z-index: 2;
+    width: 960px; height: 480px;
     display: flex;
   }
 
-  /* LEFT */
+  /* ═══ LEFT PANEL 220px ═══ */
   .left {
-    width: 260px;
+    width: 220px;
     height: 480px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 16px 20px;
-    border-right: 1px solid rgba(0,100,200,0.2);
+    padding: 12px 14px;
+    border-right: 1px solid rgba(0,100,200,0.18);
+  }
+
+  /* WEATHER TOP */
+  .weather-top {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .weather-icon {
+    font-size: 32px;
+    line-height: 1;
+    filter: drop-shadow(0 0 6px rgba(0,150,255,0.4));
+  }
+
+  .weather-now {
+    text-align: right;
+  }
+
+  .weather-temp {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 12px rgba(0,150,255,0.5);
+    line-height: 1;
+  }
+
+  .weather-desc {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* FORECAST 3 DAYS */
+  .forecast {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .fc-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+  }
+
+  .fc-name {
+    font-size: 8px;
+    color: rgba(0,150,255,0.4);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .fc-icon { font-size: 16px; }
+
+  .fc-temp {
+    font-family: 'Orbitron', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  /* DIVIDER */
+  .div {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.3), transparent);
+    margin: 8px 0;
   }
 
   /* CLOCK */
   .time {
     font-family: 'Orbitron', monospace;
-    font-size: 76px;
+    font-size: 64px;
     font-weight: 900;
-    color: #ffffff;
+    color: #fff;
     line-height: 1;
     letter-spacing: -3px;
-    text-shadow:
-      0 0 20px rgba(0,150,255,0.9),
-      0 0 50px rgba(0,100,200,0.5);
+    text-shadow: 0 0 20px rgba(0,150,255,0.9), 0 0 50px rgba(0,100,200,0.4);
   }
 
   .colon {
     color: rgba(0,160,255,0.7);
     animation: blink 1s step-end infinite;
   }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
 
-  @keyframes blink {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.05; }
-  }
-
-  /* DATE */
-  .date-block {
-    margin-top: 10px;
-    text-align: center;
-  }
+  .date-block { margin-top: 6px; text-align: center; }
 
   .date-text {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
     color: #ffffff;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     text-transform: uppercase;
   }
 
   .day-text {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 200;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 5px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 4px;
     text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.35), transparent);
-    margin: 16px 0;
+    margin-top: 3px;
   }
 
   /* PRICES */
-  .prices {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .prices { width: 100%; display: flex; flex-direction: column; gap: 7px; }
 
   .price-card {
-    background: rgba(0,40,90,0.25);
-    border: 1px solid rgba(0,100,200,0.2);
-    padding: 10px 12px;
+    background: rgba(0,40,90,0.2);
+    border: 1px solid rgba(0,100,200,0.18);
+    padding: 7px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -150,85 +213,65 @@
     position: absolute;
     left: 0; top: 15%; bottom: 15%;
     width: 2px;
-    background: linear-gradient(transparent, rgba(0,150,255,0.7), transparent);
+    background: linear-gradient(transparent, rgba(0,150,255,0.6), transparent);
   }
 
-  .coin-left { display: flex; flex-direction: column; gap: 2px; }
+  .coin-left { display: flex; flex-direction: column; gap: 1px; }
 
   .coin-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 9px;
+    font-size: 8px;
     font-weight: 700;
-    color: rgba(0,160,255,0.55);
-    letter-spacing: 3px;
+    color: rgba(0,160,255,0.5);
+    letter-spacing: 2px;
   }
 
   .coin-price {
     font-family: 'Orbitron', monospace;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-    color: #ffffff;
-    text-shadow: 0 0 12px rgba(0,150,255,0.35);
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0,150,255,0.3);
   }
 
   .coin-change {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 400;
     letter-spacing: 1px;
-    padding: 3px 7px;
+    padding: 2px 5px;
   }
 
-  .coin-change.up {
-    color: #00e5a0;
-    background: rgba(0,229,160,0.1);
-    border: 1px solid rgba(0,229,160,0.25);
-  }
+  .coin-change.up { color:#00e5a0; background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.25); }
+  .coin-change.down { color:#ff4560; background:rgba(255,69,96,0.1); border:1px solid rgba(255,69,96,0.25); }
+  .coin-change.loading { color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.1); }
 
-  .coin-change.down {
-    color: #ff4560;
-    background: rgba(255,69,96,0.1);
-    border: 1px solid rgba(255,69,96,0.25);
-  }
-
-  .coin-change.loading {
-    color: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
-  /* RIGHT - CHARTS */
+  /* ═══ RIGHT AREA 740px ═══ */
   .right {
-    width: 700px;
+    width: 740px;
     height: 480px;
     display: flex;
     flex-direction: column;
   }
 
   .chart-block {
-    width: 700px;
+    width: 740px;
     height: 240px;
     position: relative;
     overflow: hidden;
   }
 
-  .chart-block:first-child {
-    border-bottom: 1px solid rgba(0,100,200,0.12);
-  }
+  .chart-block:first-child { border-bottom: 1px solid rgba(0,100,200,0.1); }
 
   .chart-tag {
-    position: absolute;
-    top: 7px;
-    left: 10px;
+    position: absolute; top:7px; left:10px;
     z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 6px;
     pointer-events: none;
   }
 
   .tag-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 9px; font-weight: 700;
     color: rgba(0,150,255,0.35);
     letter-spacing: 3px;
   }
@@ -237,39 +280,15 @@
     font-size: 8px;
     color: rgba(0,120,200,0.3);
     letter-spacing: 2px;
-    border: 1px solid rgba(0,100,200,0.18);
+    border: 1px solid rgba(0,100,200,0.15);
     padding: 1px 4px;
     font-family: 'Orbitron', monospace;
   }
 
   iframe {
-    width: 700px;
-    height: 240px;
-    border: none;
-    display: block;
+    width: 740px; height: 240px;
+    border: none; display: block;
     background: #000;
-  }
-
-  /* CORNERS */
-  .c { position: fixed; width: 14px; height: 14px; z-index: 5; }
-  .c.tl { top:8px; left:8px; border-top:1px solid rgba(0,150,255,0.5); border-left:1px solid rgba(0,150,255,0.5); }
-  .c.tr { top:8px; right:8px; border-top:1px solid rgba(0,150,255,0.5); border-right:1px solid rgba(0,150,255,0.5); }
-  .c.bl { bottom:8px; left:8px; border-bottom:1px solid rgba(0,150,255,0.5); border-left:1px solid rgba(0,150,255,0.5); }
-  .c.br { bottom:8px; right:8px; border-bottom:1px solid rgba(0,150,255,0.5); border-right:1px solid rgba(0,150,255,0.5); }
-
-  .dot {
-    position: fixed;
-    bottom: 11px; left: 130px;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: rgba(0,150,255,0.5);
-    animation: pulse 2.5s ease-in-out infinite;
-    z-index: 5;
-  }
-
-  @keyframes pulse {
-    0%,100% { opacity: 0.2; }
-    50% { opacity: 1; box-shadow: 0 0 8px rgba(0,150,255,0.8); }
   }
 </style>
 </head>
@@ -277,16 +296,46 @@
 
 <div class="bg"></div>
 <div class="scanline"></div>
-<div class="c tl"></div>
-<div class="c tr"></div>
-<div class="c bl"></div>
-<div class="c br"></div>
+<div class="c tl"></div><div class="c tr"></div>
+<div class="c bl"></div><div class="c br"></div>
 <div class="dot"></div>
 
 <div class="layout">
 
-  <!-- LEFT -->
+  <!-- LEFT PANEL -->
   <div class="left">
+
+    <!-- WEATHER NOW -->
+    <div class="weather-top">
+      <div class="weather-icon" id="w-icon">⛅</div>
+      <div class="weather-now">
+        <div class="weather-temp" id="w-temp">--°</div>
+        <div class="weather-desc" id="w-desc">carregando</div>
+      </div>
+    </div>
+
+    <!-- FORECAST 3 DAYS -->
+    <div class="forecast">
+      <div class="fc-day">
+        <span class="fc-name" id="fc0-name">---</span>
+        <span class="fc-icon" id="fc0-icon">⛅</span>
+        <span class="fc-temp" id="fc0-temp">--°</span>
+      </div>
+      <div class="fc-day">
+        <span class="fc-name" id="fc1-name">---</span>
+        <span class="fc-icon" id="fc1-icon">⛅</span>
+        <span class="fc-temp" id="fc1-temp">--°</span>
+      </div>
+      <div class="fc-day">
+        <span class="fc-name" id="fc2-name">---</span>
+        <span class="fc-icon" id="fc2-icon">⛅</span>
+        <span class="fc-temp" id="fc2-temp">--°</span>
+      </div>
+    </div>
+
+    <div class="div"></div>
+
+    <!-- CLOCK -->
     <div class="time">
       <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
     </div>
@@ -294,7 +343,10 @@
       <div class="date-text" id="date">01 JAN 2026</div>
       <div class="day-text" id="day">SEGUNDA</div>
     </div>
-    <div class="divider"></div>
+
+    <div class="div"></div>
+
+    <!-- PRICES -->
     <div class="prices">
       <div class="price-card">
         <div class="coin-left">
@@ -311,9 +363,10 @@
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
+
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT: CHARTS -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
@@ -334,50 +387,120 @@
 </div>
 
 <script>
-  const DAYS = ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'];
+  const DAYS = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+  const DAYS_FULL = ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'];
   const MONTHS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
 
+  // CLOCK
   function updateClock() {
     const n = new Date();
     document.getElementById('h').textContent = String(n.getHours()).padStart(2,'0');
     document.getElementById('m').textContent = String(n.getMinutes()).padStart(2,'0');
     document.getElementById('date').textContent =
       String(n.getDate()).padStart(2,'0') + ' ' + MONTHS[n.getMonth()] + ' ' + n.getFullYear();
-    document.getElementById('day').textContent = DAYS[n.getDay()];
+    document.getElementById('day').textContent = DAYS_FULL[n.getDay()];
   }
 
+  // CRYPTO - CoinGecko (mais compatível com WebView Android)
   async function fetchPrices() {
     try {
-      const r = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=%5B%22BTCUSDT%22,%22ETHUSDT%22%5D');
-      const data = await r.json();
-      data.forEach(t => {
-        const price = parseFloat(t.lastPrice);
-        const change = parseFloat(t.priceChangePercent);
-        const isUp = change >= 0;
-        const pTxt = price >= 1000
-          ? '$' + Math.round(price).toLocaleString('en-US')
-          : '$' + price.toFixed(2);
-        const cTxt = (isUp ? '+' : '') + change.toFixed(2) + '%';
-        const cls = 'coin-change ' + (isUp ? 'up' : 'down');
-        if (t.symbol === 'BTCUSDT') {
-          document.getElementById('btc-p').textContent = pTxt;
-          const el = document.getElementById('btc-c');
-          el.textContent = cTxt; el.className = cls;
-        } else if (t.symbol === 'ETHUSDT') {
-          document.getElementById('eth-p').textContent = pTxt;
-          const el = document.getElementById('eth-c');
-          el.textContent = cTxt; el.className = cls;
-        }
-      });
+      const r = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
+        { mode: 'cors' }
+      );
+      const d = await r.json();
+
+      const btcP = d.bitcoin.usd;
+      const btcC = d.bitcoin.usd_24h_change;
+      const ethP = d.ethereum.usd;
+      const ethC = d.ethereum.usd_24h_change;
+
+      document.getElementById('btc-p').textContent = '$' + Math.round(btcP).toLocaleString('en-US');
+      const bc = document.getElementById('btc-c');
+      bc.textContent = (btcC >= 0 ? '+' : '') + btcC.toFixed(2) + '%';
+      bc.className = 'coin-change ' + (btcC >= 0 ? 'up' : 'down');
+
+      document.getElementById('eth-p').textContent = '$' + ethP.toFixed(0);
+      const ec = document.getElementById('eth-c');
+      ec.textContent = (ethC >= 0 ? '+' : '') + ethC.toFixed(2) + '%';
+      ec.className = 'coin-change ' + (ethC >= 0 ? 'up' : 'down');
+
     } catch(e) {
-      console.log('fetch error', e);
+      console.log('crypto error', e);
     }
   }
 
+  // WEATHER - Open-Meteo (gratuito, sem API key, São Luís MA)
+  // Lat: -2.53, Lon: -44.30
+  function weatherIcon(code) {
+    if (code === 0) return '☀️';
+    if (code <= 2) return '⛅';
+    if (code <= 3) return '☁️';
+    if (code <= 48) return '🌫️';
+    if (code <= 57) return '🌦️';
+    if (code <= 67) return '🌧️';
+    if (code <= 77) return '🌨️';
+    if (code <= 82) return '🌧️';
+    if (code <= 86) return '🌨️';
+    if (code <= 99) return '⛈️';
+    return '🌡️';
+  }
+
+  function weatherDesc(code) {
+    if (code === 0) return 'CÉU LIMPO';
+    if (code <= 2) return 'PARCIALMENTE NUBLADO';
+    if (code <= 3) return 'NUBLADO';
+    if (code <= 48) return 'NEBLINA';
+    if (code <= 57) return 'GAROA';
+    if (code <= 67) return 'CHUVA';
+    if (code <= 77) return 'NEVE';
+    if (code <= 82) return 'CHUVA FORTE';
+    if (code <= 99) return 'TEMPESTADE';
+    return 'VARIÁVEL';
+  }
+
+  async function fetchWeather() {
+    try {
+      const r = await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=-2.53&longitude=-44.30&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max&timezone=America%2FFortaleza&forecast_days=4',
+        { mode: 'cors' }
+      );
+      const d = await r.json();
+
+      // NOW
+      const temp = Math.round(d.current.temperature_2m);
+      const code = d.current.weathercode;
+      document.getElementById('w-icon').textContent = weatherIcon(code);
+      document.getElementById('w-temp').textContent = temp + '°';
+      document.getElementById('w-desc').textContent = weatherDesc(code);
+
+      // NEXT 3 DAYS (indices 1, 2, 3 — hoje é 0)
+      for (let i = 0; i < 3; i++) {
+        const idx = i + 1;
+        const dateStr = d.daily.time[idx];
+        const dayDate = new Date(dateStr + 'T12:00:00');
+        const dayName = DAYS[dayDate.getDay()];
+        const dayCode = d.daily.weathercode[idx];
+        const dayTemp = Math.round(d.daily.temperature_2m_max[idx]);
+
+        document.getElementById('fc' + i + '-name').textContent = dayName;
+        document.getElementById('fc' + i + '-icon').textContent = weatherIcon(dayCode);
+        document.getElementById('fc' + i + '-temp').textContent = dayTemp + '°';
+      }
+
+    } catch(e) {
+      console.log('weather error', e);
+    }
+  }
+
+  // INIT
   updateClock();
   fetchPrices();
+  fetchWeather();
+
   setInterval(updateClock, 1000);
-  setInterval(fetchPrices, 30000);
+  setInterval(fetchPrices, 60000);
+  setInterval(fetchWeather, 600000); // atualiza clima a cada 10 min
 </script>
 </body>
 </html>
