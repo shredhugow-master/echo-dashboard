@@ -9,18 +9,6 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --screen-w: 960px;
-    --screen-h: 480px;
-
-    --left-w: 340px;
-    --right-w: 620px;
-
-    --chart-visible-w: 620px;
-    --chart-real-w: 670px;
-    --chart-h: 240px;
-  }
-
   html, body {
     width: 960px;
     height: 480px;
@@ -52,14 +40,11 @@
 
   .scanline {
     position: fixed;
-    left: 0;
-    width: 960px;
-    height: 2px;
+    left: 0; width: 960px; height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0,150,255,0.2), transparent);
     animation: scan 6s linear infinite;
     z-index: 1;
   }
-
   @keyframes scan { 0%{top:-2px} 100%{top:482px} }
 
   .c { position: fixed; width: 14px; height: 14px; z-index: 5; }
@@ -75,24 +60,43 @@
     height: 480px;
   }
 
+  /* ═══ CHARTS — layout original, mas com crop interno do TradingView ═══ */
   .right {
     position: absolute;
     right: 0;
     top: 0;
-    width: var(--right-w);
+    width: 670px;
     height: 480px;
     overflow: hidden;
+    z-index: 4;
   }
 
   .chart-block {
-    width: var(--chart-visible-w);
-    height: var(--chart-h);
+    width: 670px;
+    height: 240px;
     position: relative;
     overflow: hidden;
+    background: #000;
   }
 
   .chart-block:first-child {
     border-bottom: 1px solid rgba(0,100,200,0.1);
+  }
+
+  /*
+    O iframe fica maior que a janela visível.
+    A janela mantém 670px, mas o TradingView renderiza com 735px.
+    O excesso da direita é cortado, reduzindo visualmente a sobra interna.
+  */
+  iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 735px;
+    height: 240px;
+    border: none;
+    display: block;
+    background: #000;
   }
 
   .chart-mask {
@@ -100,27 +104,22 @@
     right: 0;
     top: 0;
     bottom: 0;
-    width: 3px;
-    background: #000d24;
+    width: 2px;
+    background: #000;
     z-index: 8;
     pointer-events: none;
   }
 
   .chart-tag {
-    position: absolute;
-    top: 7px;
-    left: 10px;
+    position: absolute; top:7px; left:10px;
     z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    display: flex; align-items: center; gap: 6px;
     pointer-events: none;
   }
 
   .tag-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 9px; font-weight: 700;
     color: rgba(0,150,255,0.35);
     letter-spacing: 3px;
   }
@@ -134,22 +133,11 @@
     font-family: 'Orbitron', monospace;
   }
 
-  iframe {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: var(--chart-real-w);
-    height: var(--chart-h);
-    border: none;
-    display: block;
-    background: #000;
-  }
-
+  /* ═══ LEFT — original 290px ═══ */
   .left {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: var(--left-w);
+    left: 0; top: 0;
+    width: 290px;
     height: 480px;
     display: flex;
     flex-direction: column;
@@ -157,6 +145,7 @@
     align-items: center;
     padding: 10px 14px;
     border-right: 1px solid rgba(0,100,200,0.2);
+    z-index: 3;
   }
 
   .weather-now {
@@ -248,7 +237,6 @@
     color: rgba(0,160,255,0.7);
     animation: blink 1s step-end infinite;
   }
-
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
 
   .date-block { text-align: center; margin-top: 2px; }
@@ -292,9 +280,7 @@
   .price-card::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 15%;
-    bottom: 15%;
+    left: 0; top: 15%; bottom: 15%;
     width: 2px;
     background: linear-gradient(transparent, rgba(0,150,255,0.7), transparent);
   }
@@ -332,22 +318,9 @@
     white-space: nowrap;
   }
 
-  .coin-change.up {
-    color:#00e5a0;
-    background:rgba(0,229,160,0.1);
-    border:1px solid rgba(0,229,160,0.3);
-  }
-
-  .coin-change.down {
-    color:#ff4560;
-    background:rgba(255,69,96,0.1);
-    border:1px solid rgba(255,69,96,0.3);
-  }
-
-  .coin-change.loading {
-    color:rgba(255,255,255,0.2);
-    border:1px solid rgba(255,255,255,0.1);
-  }
+  .coin-change.up { color:#00e5a0; background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.3); }
+  .coin-change.down { color:#ff4560; background:rgba(255,69,96,0.1); border:1px solid rgba(255,69,96,0.3); }
+  .coin-change.loading { color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.1); }
 </style>
 </head>
 <body>
@@ -454,37 +427,28 @@
     document.getElementById('day').textContent = DAYS_FULL[n.getDay()];
   }
 
-  function formatBRL(value) {
-    return 'R$' + Math.round(value).toLocaleString('pt-BR');
-  }
-
   async function fetchPrices() {
     try {
       const r = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=brl&include_24hr_change=true',
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
         { mode: 'cors' }
       );
-
       const d = await r.json();
+      const btcP = d.bitcoin.usd;
+      const btcC = d.bitcoin.usd_24h_change;
+      const ethP = d.ethereum.usd;
+      const ethC = d.ethereum.usd_24h_change;
 
-      const btcP = d.bitcoin.brl;
-      const btcC = d.bitcoin.brl_24h_change;
-      const ethP = d.ethereum.brl;
-      const ethC = d.ethereum.brl_24h_change;
-
-      document.getElementById('btc-p').textContent = formatBRL(btcP);
+      document.getElementById('btc-p').textContent = '$' + Math.round(btcP).toLocaleString('en-US');
       const bc = document.getElementById('btc-c');
       bc.textContent = (btcC >= 0 ? '+' : '') + btcC.toFixed(2) + '%';
       bc.className = 'coin-change ' + (btcC >= 0 ? 'up' : 'down');
 
-      document.getElementById('eth-p').textContent = formatBRL(ethP);
+      document.getElementById('eth-p').textContent = '$' + Math.round(ethP).toLocaleString('en-US');
       const ec = document.getElementById('eth-c');
       ec.textContent = (ethC >= 0 ? '+' : '') + ethC.toFixed(2) + '%';
       ec.className = 'coin-change ' + (ethC >= 0 ? 'up' : 'down');
-
-    } catch(e) {
-      console.log('crypto error', e);
-    }
+    } catch(e) { console.log('crypto error', e); }
   }
 
   function weatherIcon(code) {
@@ -519,9 +483,7 @@
         'https://api.open-meteo.com/v1/forecast?latitude=-2.53&longitude=-44.30&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max&timezone=America%2FFortaleza&forecast_days=4',
         { mode: 'cors' }
       );
-
       const d = await r.json();
-
       document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
       document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
       document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
@@ -533,16 +495,12 @@
         document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
         document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
       }
-
-    } catch(e) {
-      console.log('weather error', e);
-    }
+    } catch(e) { console.log('weather error', e); }
   }
 
   updateClock();
   fetchPrices();
   fetchWeather();
-
   setInterval(updateClock, 1000);
   setInterval(fetchPrices, 60000);
   setInterval(fetchWeather, 600000);
