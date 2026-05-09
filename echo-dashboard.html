@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=960, height=480, initial-scale=1.0">
+<title>Echo Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@200;300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 960px;
+    height: 480px;
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+    font-family: 'Exo 2', sans-serif;
+    display: flex;
+    flex-direction: row;
+  }
+
+  /* BACKGROUND */
+  .bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 960px; height: 480px;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(0, 60, 120, 0.6) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(0, 100, 180, 0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, rgba(0, 30, 80, 0.5) 0%, transparent 50%),
+      linear-gradient(135deg, #000000 0%, #000d1a 50%, #001428 100%);
+    z-index: 0;
+  }
+
+  .bg::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,100,200,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,100,200,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* SCAN LINE */
+  .scanline {
+    position: fixed;
+    top: 0; left: 0;
+    width: 960px; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.3), transparent);
+    animation: scan 4s linear infinite;
+    z-index: 1;
+  }
+
+  @keyframes scan {
+    0% { top: 0; }
+    100% { top: 480px; }
+  }
+
+  /* LEFT PANEL */
+  .left {
+    width: 280px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    border-right: 1px solid rgba(0,100,200,0.15);
+    padding: 20px;
+  }
+
+  .left::after {
+    content: '';
+    position: absolute;
+    right: -1px; top: 20%; bottom: 20%;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(0,150,255,0.5), transparent);
+  }
+
+  /* CLOCK */
+  .time {
+    font-family: 'Orbitron', monospace;
+    font-size: 72px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+      0 0 20px rgba(0,150,255,0.8),
+      0 0 40px rgba(0,100,200,0.4),
+      0 0 60px rgba(0,80,160,0.2);
+    position: relative;
+  }
+
+  .colon {
+    animation: blink 1s step-end infinite;
+    color: rgba(0,150,255,0.8);
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.1; }
+  }
+
+  .date-row {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .date-text {
+    font-size: 13px;
+    font-weight: 200;
+    color: rgba(0,150,255,0.6);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .day-text {
+    font-size: 10px;
+    font-weight: 200;
+    color: rgba(0,100,180,0.4);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.3), transparent);
+    margin: 18px 0;
+  }
+
+  /* PRICES */
+  .prices {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .price-card {
+    background: rgba(0,50,100,0.15);
+    border: 1px solid rgba(0,100,200,0.15);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(transparent, rgba(0,150,255,0.6), transparent);
+  }
+
+  .price-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .coin-symbol {
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(0,150,255,0.6);
+    letter-spacing: 3px;
+  }
+
+  .coin-price {
+    font-family: 'Orbitron', monospace;
+    font-size: 17px;
+    font-weight: 400;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0,150,255,0.3);
+    margin-top: 2px;
+  }
+
+  .coin-change {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  .coin-change.up {
+    color: #00e5a0;
+    background: rgba(0,229,160,0.1);
+    border: 1px solid rgba(0,229,160,0.2);
+    text-shadow: 0 0 8px rgba(0,229,160,0.5);
+  }
+
+  .coin-change.down {
+    color: #ff4560;
+    background: rgba(255,69,96,0.1);
+    border: 1px solid rgba(255,69,96,0.2);
+    text-shadow: 0 0 8px rgba(255,69,96,0.5);
+  }
+
+  /* RIGHT PANEL */
+  .right {
+    width: 680px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+  }
+
+  .chart-block {
+    width: 680px;
+    height: 240px;
+    position: relative;
+    border-bottom: 1px solid rgba(0,100,200,0.1);
+  }
+
+  .chart-block:last-child {
+    border-bottom: none;
+  }
+
+  .chart-tag {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+
+  .tag-symbol {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: rgba(0,150,255,0.4);
+    letter-spacing: 3px;
+  }
+
+  .tag-tf {
+    font-size: 8px;
+    color: rgba(0,100,180,0.3);
+    letter-spacing: 2px;
+    border: 1px solid rgba(0,100,200,0.15);
+    padding: 1px 4px;
+    font-family: 'Orbitron', monospace;
+  }
+
+  iframe {
+    width: 680px;
+    height: 240px;
+    border: none;
+    display: block;
+    background: transparent;
+  }
+
+  /* CORNER DECORATIONS */
+  .corner {
+    position: fixed;
+    width: 16px;
+    height: 16px;
+    z-index: 3;
+  }
+
+  .corner.tl { top: 8px; left: 8px; border-top: 1px solid rgba(0,150,255,0.4); border-left: 1px solid rgba(0,150,255,0.4); }
+  .corner.tr { top: 8px; right: 8px; border-top: 1px solid rgba(0,150,255,0.4); border-right: 1px solid rgba(0,150,255,0.4); }
+  .corner.bl { bottom: 8px; left: 8px; border-bottom: 1px solid rgba(0,150,255,0.4); border-left: 1px solid rgba(0,150,255,0.4); }
+  .corner.br { bottom: 8px; right: 8px; border-bottom: 1px solid rgba(0,150,255,0.4); border-right: 1px solid rgba(0,150,255,0.4); }
+
+  /* UPDATE DOT */
+  .update-dot {
+    position: fixed;
+    bottom: 12px;
+    left: 140px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(0,150,255,0.4);
+    animation: pulse 2s ease-in-out infinite;
+    z-index: 3;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); box-shadow: 0 0 6px rgba(0,150,255,0.6); }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="scanline"></div>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+<div class="update-dot"></div>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="time">
+    <span id="hours">00</span><span class="colon">:</span><span id="minutes">00</span>
+  </div>
+  <div class="date-row">
+    <div class="date-text" id="date-display">01 JAN 2026</div>
+    <div class="day-text" id="day-display">SEGUNDA</div>
+  </div>
+  <div class="divider"></div>
+  <div class="prices">
+    <div class="price-card">
+      <div class="price-left">
+        <span class="coin-symbol">BTC</span>
+        <span class="coin-price" id="btc-price">---</span>
+      </div>
+      <span class="coin-change" id="btc-change">--</span>
+    </div>
+    <div class="price-card">
+      <div class="price-left">
+        <span class="coin-symbol">ETH</span>
+        <span class="coin-price" id="eth-price">---</span>
+      </div>
+      <span class="coin-change" id="eth-change">--</span>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+  <div class="chart-block">
+    <div class="chart-tag">
+      <span class="tag-symbol">BTCUSDT</span>
+      <span class="tag-tf">1H</span>
+    </div>
+    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+  </div>
+  <div class="chart-block">
+    <div class="chart-tag">
+      <span class="tag-symbol">ETHUSDT</span>
+      <span class="tag-tf">1H</span>
+    </div>
+    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+  </div>
+</div>
+
+<script>
+  const DAYS = ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'];
+  const MONTHS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('hours').textContent = String(now.getHours()).padStart(2,'0');
+    document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2,'0');
+    const d = now.getDate(), mo = MONTHS[now.getMonth()], y = now.getFullYear();
+    document.getElementById('date-display').textContent = `${String(d).padStart(2,'0')} ${mo} ${y}`;
+    document.getElementById('day-display').textContent = DAYS[now.getDay()];
+  }
+
+  async function fetchPrices() {
+    try {
+      const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT"]');
+      const data = await res.json();
+      data.forEach(t => {
+        const price = parseFloat(t.lastPrice);
+        const change = parseFloat(t.priceChangePercent);
+        const isUp = change >= 0;
+        const changeText = (isUp ? '+' : '') + change.toFixed(2) + '%';
+        const priceText = price >= 1000
+          ? '$' + Math.round(price).toLocaleString('en-US')
+          : '$' + price.toFixed(2);
+        if (t.symbol === 'BTCUSDT') {
+          document.getElementById('btc-price').textContent = priceText;
+          const el = document.getElementById('btc-change');
+          el.textContent = changeText;
+          el.className = 'coin-change ' + (isUp ? 'up' : 'down');
+        } else if (t.symbol === 'ETHUSDT') {
+          document.getElementById('eth-price').textContent = priceText;
+          const el = document.getElementById('eth-change');
+          el.textContent = changeText;
+          el.className = 'coin-change ' + (isUp ? 'up' : 'down');
+        }
+      });
+    } catch(e) {}
+  }
+
+  updateClock();
+  fetchPrices();
+  setInterval(updateClock, 1000);
+  setInterval(fetchPrices, 30000);
+</script>
+</body>
+</html>
