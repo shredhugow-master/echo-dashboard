@@ -60,22 +60,23 @@
     height: 480px;
   }
 
-  /* ═══ CHARTS — layout original, mas com crop interno do TradingView ═══ */
+  /* ═══ CHARTS — começa no mesmo ponto, mas passa para fora da tela ═══ */
   .right {
     position: absolute;
-    right: 0;
+    left: 290px;
     top: 0;
-    width: 670px;
+    width: 820px;
     height: 480px;
-    overflow: hidden;
+    overflow: visible;
+    background: #000;
     z-index: 4;
   }
 
   .chart-block {
-    width: 670px;
+    width: 820px;
     height: 240px;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     background: #000;
   }
 
@@ -83,30 +84,12 @@
     border-bottom: 1px solid rgba(0,100,200,0.1);
   }
 
-  /*
-    O iframe fica maior que a janela visível.
-    A janela mantém 670px, mas o TradingView renderiza com 735px.
-    O excesso da direita é cortado, reduzindo visualmente a sobra interna.
-  */
-  iframe {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 735px;
-    height: 240px;
-    border: none;
-    display: block;
-    background: #000;
-  }
-
   .chart-mask {
     position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
+    right: 0; top: 0; bottom: 0;
+    width: 0px;
     background: #000;
-    z-index: 8;
+    z-index: 5;
     pointer-events: none;
   }
 
@@ -133,6 +116,14 @@
     font-family: 'Orbitron', monospace;
   }
 
+  iframe {
+    width: 820px;
+    height: 240px;
+    border: none;
+    display: block;
+    background: #000;
+  }
+
   /* ═══ LEFT — original 290px ═══ */
   .left {
     position: absolute;
@@ -145,7 +136,7 @@
     align-items: center;
     padding: 10px 14px;
     border-right: 1px solid rgba(0,100,200,0.2);
-    z-index: 3;
+    z-index: 8;
   }
 
   .weather-now {
@@ -332,6 +323,7 @@
 
 <div class="layout">
 
+  <!-- LEFT -->
   <div class="left">
 
     <div style="width:100%;">
@@ -391,6 +383,7 @@
 
   </div>
 
+  <!-- RIGHT -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
@@ -398,16 +391,13 @@
         <span class="tag-tf">1H</span>
       </div>
       <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
-      <div class="chart-mask"></div>
     </div>
-
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">ETHUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
       <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
-      <div class="chart-mask"></div>
     </div>
   </div>
 
