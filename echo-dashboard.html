@@ -60,18 +60,35 @@
     height: 480px;
   }
 
-  /* ═══ CHARTS — container com overflow:hidden, iframe deslocado pra direita ═══ */
+  /* ═══ LEFT 290px — posição fixa ═══ */
+  .left {
+    position: absolute;
+    left: 0; top: 0;
+    width: 290px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-right: 1px solid rgba(0,100,200,0.2);
+    z-index: 3;
+    background: transparent;
+  }
+
+  /* ═══ RIGHT — começa em 290px, vai ATÉ A BORDA DIREITA da tela ═══ */
+  /* Container: exatamente 670px (960-290) com overflow:hidden */
   .right {
     position: absolute;
-    right: 0;
+    left: 290px;          /* começa onde termina o painel esquerdo */
     top: 0;
-    width: 670px;
+    right: 0;             /* vai até a borda direita da tela */
     height: 480px;
-    overflow: hidden;  /* esconde o que sair pela direita */
+    overflow: hidden;     /* corta o que sair pela direita */
   }
 
   .chart-block {
-    width: 670px;
+    width: 100%;
     height: 240px;
     position: relative;
     overflow: hidden;
@@ -104,30 +121,13 @@
     font-family: 'Orbitron', monospace;
   }
 
-  /* iframe maior que o container + deslocado pra direita */
-  /* A escala de preços fica nos últimos ~70px da direita do iframe */
-  /* Aumentamos o iframe e usamos margin-left negativo pra centralizar o gráfico */
+  /* iframe: 100% da largura do container — preenche até a borda */
   iframe {
-    width: 740px;        /* maior que o container 670px */
+    width: 100%;
     height: 240px;
     border: none;
     display: block;
     background: #000;
-    margin-left: -70px;  /* desloca pra esquerda, escondendo escala pela direita */
-  }
-
-  /* ═══ LEFT 290px ═══ */
-  .left {
-    position: absolute;
-    left: 0; top: 0;
-    width: 290px;
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-right: 1px solid rgba(0,100,200,0.2);
   }
 
   /* WEATHER */
@@ -166,12 +166,12 @@
     text-align: center;
   }
 
-  /* FORECAST — maiores */
   .forecast {
     width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
+    margin-top: 8px;
   }
 
   .fc-day {
@@ -272,7 +272,6 @@
   .price-left {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 1px;
   }
 
@@ -280,7 +279,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #ffffff;
+    color: #fff;
     letter-spacing: 3px;
   }
 
@@ -297,7 +296,6 @@
   .coin-change {
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.5px;
     padding: 4px 8px;
     white-space: nowrap;
   }
@@ -318,7 +316,6 @@
 
   <!-- LEFT -->
   <div class="left">
-
     <div style="width:100%;">
       <div class="weather-now">
         <div class="weather-row1">
@@ -327,7 +324,7 @@
         </div>
         <div class="w-desc" id="w-desc">carregando</div>
       </div>
-      <div class="forecast" style="margin-top:10px;">
+      <div class="forecast">
         <div class="fc-day">
           <span class="fc-name" id="fc0-name">---</span>
           <span class="fc-icon" id="fc0-icon">⛅</span>
@@ -372,10 +369,9 @@
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
-
   </div>
 
-  <!-- RIGHT -->
+  <!-- RIGHT: left:290px + right:0 = preenche exatamente até a borda -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
@@ -433,29 +429,28 @@
     } catch(e) { console.log('crypto error', e); }
   }
 
-  function weatherIcon(code) {
-    if (code === 0) return '☀️';
-    if (code <= 2) return '⛅';
-    if (code <= 3) return '☁️';
-    if (code <= 48) return '🌫️';
-    if (code <= 57) return '🌦️';
-    if (code <= 67) return '🌧️';
-    if (code <= 77) return '🌨️';
-    if (code <= 82) return '🌧️';
-    if (code <= 99) return '⛈️';
+  function weatherIcon(c) {
+    if (c===0) return '☀️';
+    if (c<=2) return '⛅';
+    if (c<=3) return '☁️';
+    if (c<=48) return '🌫️';
+    if (c<=57) return '🌦️';
+    if (c<=67) return '🌧️';
+    if (c<=77) return '🌨️';
+    if (c<=82) return '🌧️';
+    if (c<=99) return '⛈️';
     return '🌡️';
   }
 
-  function weatherDesc(code) {
-    if (code === 0) return 'CÉU LIMPO';
-    if (code <= 2) return 'PARC. NUBLADO';
-    if (code <= 3) return 'NUBLADO';
-    if (code <= 48) return 'NEBLINA';
-    if (code <= 57) return 'GAROA';
-    if (code <= 67) return 'CHUVA';
-    if (code <= 77) return 'NEVE';
-    if (code <= 82) return 'CHUVA FORTE';
-    if (code <= 99) return 'TEMPESTADE';
+  function weatherDesc(c) {
+    if (c===0) return 'CÉU LIMPO';
+    if (c<=2) return 'PARC. NUBLADO';
+    if (c<=3) return 'NUBLADO';
+    if (c<=48) return 'NEBLINA';
+    if (c<=57) return 'GAROA';
+    if (c<=67) return 'CHUVA';
+    if (c<=82) return 'CHUVA FORTE';
+    if (c<=99) return 'TEMPESTADE';
     return 'VARIÁVEL';
   }
 
@@ -469,13 +464,12 @@
       document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
       document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
       document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
-
       for (let i = 0; i < 3; i++) {
         const idx = i + 1;
-        const dayDate = new Date(d.daily.time[idx] + 'T12:00:00');
-        document.getElementById('fc' + i + '-name').textContent = DAYS[dayDate.getDay()];
-        document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
-        document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
+        const dd = new Date(d.daily.time[idx] + 'T12:00:00');
+        document.getElementById('fc'+i+'-name').textContent = DAYS[dd.getDay()];
+        document.getElementById('fc'+i+'-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
+        document.getElementById('fc'+i+'-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
       }
     } catch(e) { console.log('weather error', e); }
   }
