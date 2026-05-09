@@ -58,33 +58,16 @@
     z-index: 2;
     width: 960px;
     height: 480px;
-    display: flex;
   }
 
-  /* ═══ LEFT 290px ═══ */
-  .left {
-    width: 290px;
-    flex-shrink: 0;
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-right: 1px solid rgba(0,100,200,0.2);
-  }
-
-  /* ═══ RIGHT — empurrado 60px pra direita ═══ */
-  /* O TradingView tem ~60-70px de escala de preços na direita */
-  /* Empurramos o bloco inteiro 60px pra direita */
-  /* O overflow do body está hidden então some pela direita */
+  /* ═══ CHARTS — ancorados em right:0, com ESCALA ESCONDIDA ═══ */
   .right {
+    position: absolute;
+    right: 0;
+    top: 0;
     width: 670px;
     height: 480px;
-    display: flex;
-    flex-direction: column;
-    margin-left: 85px;   /* ← EMPURRA 85px PRA DIREITA — esconde escala TV */
-    flex-shrink: 0;
+    overflow: hidden;
   }
 
   .chart-block {
@@ -92,11 +75,20 @@
     height: 240px;
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
   }
 
   .chart-block:first-child {
     border-bottom: 1px solid rgba(0,100,200,0.1);
+  }
+
+  /* MÁSCARA pra esconder a escala de preço da direita do TradingView */
+  .chart-mask {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 0px;
+    background: #000;
+    z-index: 5;
+    pointer-events: none;
   }
 
   .chart-tag {
@@ -130,12 +122,27 @@
     background: #000;
   }
 
+  /* ═══ LEFT — 290px (960 - 670 = 290) ═══ */
+  .left {
+    position: absolute;
+    left: 0; top: 0;
+    width: 290px;
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-right: 1px solid rgba(0,100,200,0.2);
+  }
+
   /* WEATHER */
   .weather-now {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 4px;
   }
 
   .weather-row1 {
@@ -171,33 +178,34 @@
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
   .fc-day {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
   }
 
   .fc-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #fff;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  .fc-icon { font-size: 30px; line-height: 1.2; }
+  .fc-icon { font-size: 24px; line-height: 1.2; }
 
   .fc-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
   }
 
+  /* CLOCK */
   .clock-section {
     width: 100%;
     display: flex;
@@ -240,6 +248,7 @@
     margin-top: 1px;
   }
 
+  /* PRICES — bem maiores, mas compactos verticalmente */
   .prices {
     width: 100%;
     display: flex;
@@ -270,6 +279,7 @@
   .price-left {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 1px;
   }
 
@@ -277,7 +287,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #fff;
+    color: #ffffff;
     letter-spacing: 3px;
   }
 
@@ -294,6 +304,7 @@
   .coin-change {
     font-size: 14px;
     font-weight: 700;
+    letter-spacing: 0.5px;
     padding: 4px 8px;
     white-space: nowrap;
   }
@@ -314,6 +325,8 @@
 
   <!-- LEFT -->
   <div class="left">
+
+    <!-- TOPO: clima + previsão -->
     <div style="width:100%;">
       <div class="weather-now">
         <div class="weather-row1">
@@ -322,6 +335,7 @@
         </div>
         <div class="w-desc" id="w-desc">carregando</div>
       </div>
+
       <div class="forecast">
         <div class="fc-day">
           <span class="fc-name" id="fc0-name">---</span>
@@ -341,6 +355,7 @@
       </div>
     </div>
 
+    <!-- MEIO: relógio -->
     <div class="clock-section">
       <div class="time">
         <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
@@ -351,6 +366,7 @@
       </div>
     </div>
 
+    <!-- BAIXO: preços -->
     <div class="prices">
       <div class="price-card">
         <div class="price-left">
@@ -367,23 +383,24 @@
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
+
   </div>
 
-  <!-- RIGHT: empurrado 60px pra direita -->
+  <!-- RIGHT -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">BTCUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">ETHUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
   </div>
 
@@ -410,8 +427,10 @@
         { mode: 'cors' }
       );
       const d = await r.json();
-      const btcP = d.bitcoin.usd, btcC = d.bitcoin.usd_24h_change;
-      const ethP = d.ethereum.usd, ethC = d.ethereum.usd_24h_change;
+      const btcP = d.bitcoin.usd;
+      const btcC = d.bitcoin.usd_24h_change;
+      const ethP = d.ethereum.usd;
+      const ethC = d.ethereum.usd_24h_change;
 
       document.getElementById('btc-p').textContent = '$' + Math.round(btcP).toLocaleString('en-US');
       const bc = document.getElementById('btc-c');
@@ -422,20 +441,32 @@
       const ec = document.getElementById('eth-c');
       ec.textContent = (ethC >= 0 ? '+' : '') + ethC.toFixed(2) + '%';
       ec.className = 'coin-change ' + (ethC >= 0 ? 'up' : 'down');
-    } catch(e) {}
+    } catch(e) { console.log('crypto error', e); }
   }
 
-  function wIcon(c) {
-    if (c===0) return '☀️'; if (c<=2) return '⛅'; if (c<=3) return '☁️';
-    if (c<=48) return '🌫️'; if (c<=57) return '🌦️'; if (c<=67) return '🌧️';
-    if (c<=82) return '🌧️'; if (c<=99) return '⛈️'; return '🌡️';
+  function weatherIcon(code) {
+    if (code === 0) return '☀️';
+    if (code <= 2) return '⛅';
+    if (code <= 3) return '☁️';
+    if (code <= 48) return '🌫️';
+    if (code <= 57) return '🌦️';
+    if (code <= 67) return '🌧️';
+    if (code <= 77) return '🌨️';
+    if (code <= 82) return '🌧️';
+    if (code <= 99) return '⛈️';
+    return '🌡️';
   }
 
-  function wDesc(c) {
-    if (c===0) return 'CÉU LIMPO'; if (c<=2) return 'PARC. NUBLADO';
-    if (c<=3) return 'NUBLADO'; if (c<=48) return 'NEBLINA';
-    if (c<=57) return 'GAROA'; if (c<=67) return 'CHUVA';
-    if (c<=82) return 'CHUVA FORTE'; if (c<=99) return 'TEMPESTADE';
+  function weatherDesc(code) {
+    if (code === 0) return 'CÉU LIMPO';
+    if (code <= 2) return 'PARC. NUBLADO';
+    if (code <= 3) return 'NUBLADO';
+    if (code <= 48) return 'NEBLINA';
+    if (code <= 57) return 'GAROA';
+    if (code <= 67) return 'CHUVA';
+    if (code <= 77) return 'NEVE';
+    if (code <= 82) return 'CHUVA FORTE';
+    if (code <= 99) return 'TEMPESTADE';
     return 'VARIÁVEL';
   }
 
@@ -446,20 +477,23 @@
         { mode: 'cors' }
       );
       const d = await r.json();
-      document.getElementById('w-icon').textContent = wIcon(d.current.weathercode);
+      document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
       document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
-      document.getElementById('w-desc').textContent = wDesc(d.current.weathercode);
+      document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
+
       for (let i = 0; i < 3; i++) {
         const idx = i + 1;
-        const dd = new Date(d.daily.time[idx] + 'T12:00:00');
-        document.getElementById('fc'+i+'-name').textContent = DAYS[dd.getDay()];
-        document.getElementById('fc'+i+'-icon').textContent = wIcon(d.daily.weathercode[idx]);
-        document.getElementById('fc'+i+'-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
+        const dayDate = new Date(d.daily.time[idx] + 'T12:00:00');
+        document.getElementById('fc' + i + '-name').textContent = DAYS[dayDate.getDay()];
+        document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
+        document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
       }
-    } catch(e) {}
+    } catch(e) { console.log('weather error', e); }
   }
 
-  updateClock(); fetchPrices(); fetchWeather();
+  updateClock();
+  fetchPrices();
+  fetchWeather();
   setInterval(updateClock, 1000);
   setInterval(fetchPrices, 60000);
   setInterval(fetchWeather, 600000);
