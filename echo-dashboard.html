@@ -9,6 +9,18 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  :root {
+    --screen-w: 960px;
+    --screen-h: 480px;
+
+    --left-w: 340px;
+    --right-w: 620px;
+
+    --chart-visible-w: 620px;
+    --chart-real-w: 670px;
+    --chart-h: 240px;
+  }
+
   html, body {
     width: 960px;
     height: 480px;
@@ -40,11 +52,14 @@
 
   .scanline {
     position: fixed;
-    left: 0; width: 960px; height: 2px;
+    left: 0;
+    width: 960px;
+    height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0,150,255,0.2), transparent);
     animation: scan 6s linear infinite;
     z-index: 1;
   }
+
   @keyframes scan { 0%{top:-2px} 100%{top:482px} }
 
   .c { position: fixed; width: 14px; height: 14px; z-index: 5; }
@@ -60,36 +75,18 @@
     height: 480px;
   }
 
-  /* ═══ LEFT 290px — posição fixa ═══ */
-  .left {
-    position: absolute;
-    left: 0; top: 0;
-    width: 290px;
-    height: 480px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    border-right: 1px solid rgba(0,100,200,0.2);
-    z-index: 3;
-    background: transparent;
-  }
-
-  /* ═══ RIGHT — começa em 290px, vai ATÉ A BORDA DIREITA da tela ═══ */
-  /* Container: exatamente 670px (960-290) com overflow:hidden */
   .right {
     position: absolute;
-    left: 290px;          /* começa onde termina o painel esquerdo */
+    right: 0;
     top: 0;
-    right: 0;             /* vai até a borda direita da tela */
+    width: var(--right-w);
     height: 480px;
-    overflow: hidden;     /* corta o que sair pela direita */
+    overflow: hidden;
   }
 
   .chart-block {
-    width: 100%;
-    height: 240px;
+    width: var(--chart-visible-w);
+    height: var(--chart-h);
     position: relative;
     overflow: hidden;
   }
@@ -98,16 +95,32 @@
     border-bottom: 1px solid rgba(0,100,200,0.1);
   }
 
+  .chart-mask {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #000d24;
+    z-index: 8;
+    pointer-events: none;
+  }
+
   .chart-tag {
-    position: absolute; top:7px; left:10px;
+    position: absolute;
+    top: 7px;
+    left: 10px;
     z-index: 10;
-    display: flex; align-items: center; gap: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     pointer-events: none;
   }
 
   .tag-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 9px; font-weight: 700;
+    font-size: 9px;
+    font-weight: 700;
     color: rgba(0,150,255,0.35);
     letter-spacing: 3px;
   }
@@ -121,21 +134,37 @@
     font-family: 'Orbitron', monospace;
   }
 
-  /* iframe: 100% da largura do container — preenche até a borda */
   iframe {
-    width: 100%;
-    height: 240px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--chart-real-w);
+    height: var(--chart-h);
     border: none;
     display: block;
     background: #000;
   }
 
-  /* WEATHER */
+  .left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: var(--left-w);
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-right: 1px solid rgba(0,100,200,0.2);
+  }
+
   .weather-now {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 4px;
   }
 
   .weather-row1 {
@@ -171,34 +200,33 @@
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
   .fc-day {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
   }
 
   .fc-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #fff;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  .fc-icon { font-size: 30px; line-height: 1.2; }
+  .fc-icon { font-size: 24px; line-height: 1.2; }
 
   .fc-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
   }
 
-  /* CLOCK */
   .clock-section {
     width: 100%;
     display: flex;
@@ -220,6 +248,7 @@
     color: rgba(0,160,255,0.7);
     animation: blink 1s step-end infinite;
   }
+
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
 
   .date-block { text-align: center; margin-top: 2px; }
@@ -241,7 +270,6 @@
     margin-top: 1px;
   }
 
-  /* PRICES */
   .prices {
     width: 100%;
     display: flex;
@@ -264,7 +292,9 @@
   .price-card::before {
     content: '';
     position: absolute;
-    left: 0; top: 15%; bottom: 15%;
+    left: 0;
+    top: 15%;
+    bottom: 15%;
     width: 2px;
     background: linear-gradient(transparent, rgba(0,150,255,0.7), transparent);
   }
@@ -272,6 +302,7 @@
   .price-left {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 1px;
   }
 
@@ -279,7 +310,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 12px;
     font-weight: 700;
-    color: #fff;
+    color: #ffffff;
     letter-spacing: 3px;
   }
 
@@ -296,13 +327,27 @@
   .coin-change {
     font-size: 14px;
     font-weight: 700;
+    letter-spacing: 0.5px;
     padding: 4px 8px;
     white-space: nowrap;
   }
 
-  .coin-change.up { color:#00e5a0; background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.3); }
-  .coin-change.down { color:#ff4560; background:rgba(255,69,96,0.1); border:1px solid rgba(255,69,96,0.3); }
-  .coin-change.loading { color:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.1); }
+  .coin-change.up {
+    color:#00e5a0;
+    background:rgba(0,229,160,0.1);
+    border:1px solid rgba(0,229,160,0.3);
+  }
+
+  .coin-change.down {
+    color:#ff4560;
+    background:rgba(255,69,96,0.1);
+    border:1px solid rgba(255,69,96,0.3);
+  }
+
+  .coin-change.loading {
+    color:rgba(255,255,255,0.2);
+    border:1px solid rgba(255,255,255,0.1);
+  }
 </style>
 </head>
 <body>
@@ -314,8 +359,8 @@
 
 <div class="layout">
 
-  <!-- LEFT -->
   <div class="left">
+
     <div style="width:100%;">
       <div class="weather-now">
         <div class="weather-row1">
@@ -324,6 +369,7 @@
         </div>
         <div class="w-desc" id="w-desc">carregando</div>
       </div>
+
       <div class="forecast">
         <div class="fc-day">
           <span class="fc-name" id="fc0-name">---</span>
@@ -369,23 +415,26 @@
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
+
   </div>
 
-  <!-- RIGHT: left:290px + right:0 = preenche exatamente até a borda -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">BTCUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <div class="chart-mask"></div>
     </div>
+
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">ETHUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <div class="chart-mask"></div>
     </div>
   </div>
 
@@ -405,52 +454,62 @@
     document.getElementById('day').textContent = DAYS_FULL[n.getDay()];
   }
 
+  function formatBRL(value) {
+    return 'R$' + Math.round(value).toLocaleString('pt-BR');
+  }
+
   async function fetchPrices() {
     try {
       const r = await fetch(
-        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=brl&include_24hr_change=true',
         { mode: 'cors' }
       );
-      const d = await r.json();
-      const btcP = d.bitcoin.usd;
-      const btcC = d.bitcoin.usd_24h_change;
-      const ethP = d.ethereum.usd;
-      const ethC = d.ethereum.usd_24h_change;
 
-      document.getElementById('btc-p').textContent = '$' + Math.round(btcP).toLocaleString('en-US');
+      const d = await r.json();
+
+      const btcP = d.bitcoin.brl;
+      const btcC = d.bitcoin.brl_24h_change;
+      const ethP = d.ethereum.brl;
+      const ethC = d.ethereum.brl_24h_change;
+
+      document.getElementById('btc-p').textContent = formatBRL(btcP);
       const bc = document.getElementById('btc-c');
       bc.textContent = (btcC >= 0 ? '+' : '') + btcC.toFixed(2) + '%';
       bc.className = 'coin-change ' + (btcC >= 0 ? 'up' : 'down');
 
-      document.getElementById('eth-p').textContent = '$' + Math.round(ethP).toLocaleString('en-US');
+      document.getElementById('eth-p').textContent = formatBRL(ethP);
       const ec = document.getElementById('eth-c');
       ec.textContent = (ethC >= 0 ? '+' : '') + ethC.toFixed(2) + '%';
       ec.className = 'coin-change ' + (ethC >= 0 ? 'up' : 'down');
-    } catch(e) { console.log('crypto error', e); }
+
+    } catch(e) {
+      console.log('crypto error', e);
+    }
   }
 
-  function weatherIcon(c) {
-    if (c===0) return '☀️';
-    if (c<=2) return '⛅';
-    if (c<=3) return '☁️';
-    if (c<=48) return '🌫️';
-    if (c<=57) return '🌦️';
-    if (c<=67) return '🌧️';
-    if (c<=77) return '🌨️';
-    if (c<=82) return '🌧️';
-    if (c<=99) return '⛈️';
+  function weatherIcon(code) {
+    if (code === 0) return '☀️';
+    if (code <= 2) return '⛅';
+    if (code <= 3) return '☁️';
+    if (code <= 48) return '🌫️';
+    if (code <= 57) return '🌦️';
+    if (code <= 67) return '🌧️';
+    if (code <= 77) return '🌨️';
+    if (code <= 82) return '🌧️';
+    if (code <= 99) return '⛈️';
     return '🌡️';
   }
 
-  function weatherDesc(c) {
-    if (c===0) return 'CÉU LIMPO';
-    if (c<=2) return 'PARC. NUBLADO';
-    if (c<=3) return 'NUBLADO';
-    if (c<=48) return 'NEBLINA';
-    if (c<=57) return 'GAROA';
-    if (c<=67) return 'CHUVA';
-    if (c<=82) return 'CHUVA FORTE';
-    if (c<=99) return 'TEMPESTADE';
+  function weatherDesc(code) {
+    if (code === 0) return 'CÉU LIMPO';
+    if (code <= 2) return 'PARC. NUBLADO';
+    if (code <= 3) return 'NUBLADO';
+    if (code <= 48) return 'NEBLINA';
+    if (code <= 57) return 'GAROA';
+    if (code <= 67) return 'CHUVA';
+    if (code <= 77) return 'NEVE';
+    if (code <= 82) return 'CHUVA FORTE';
+    if (code <= 99) return 'TEMPESTADE';
     return 'VARIÁVEL';
   }
 
@@ -460,23 +519,30 @@
         'https://api.open-meteo.com/v1/forecast?latitude=-2.53&longitude=-44.30&current=temperature_2m,weathercode&daily=weathercode,temperature_2m_max&timezone=America%2FFortaleza&forecast_days=4',
         { mode: 'cors' }
       );
+
       const d = await r.json();
+
       document.getElementById('w-icon').textContent = weatherIcon(d.current.weathercode);
       document.getElementById('w-temp').textContent = Math.round(d.current.temperature_2m) + '°';
       document.getElementById('w-desc').textContent = weatherDesc(d.current.weathercode);
+
       for (let i = 0; i < 3; i++) {
         const idx = i + 1;
-        const dd = new Date(d.daily.time[idx] + 'T12:00:00');
-        document.getElementById('fc'+i+'-name').textContent = DAYS[dd.getDay()];
-        document.getElementById('fc'+i+'-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
-        document.getElementById('fc'+i+'-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
+        const dayDate = new Date(d.daily.time[idx] + 'T12:00:00');
+        document.getElementById('fc' + i + '-name').textContent = DAYS[dayDate.getDay()];
+        document.getElementById('fc' + i + '-icon').textContent = weatherIcon(d.daily.weathercode[idx]);
+        document.getElementById('fc' + i + '-temp').textContent = Math.round(d.daily.temperature_2m_max[idx]) + '°';
       }
-    } catch(e) { console.log('weather error', e); }
+
+    } catch(e) {
+      console.log('weather error', e);
+    }
   }
 
   updateClock();
   fetchPrices();
   fetchWeather();
+
   setInterval(updateClock, 1000);
   setInterval(fetchPrices, 60000);
   setInterval(fetchWeather, 600000);
