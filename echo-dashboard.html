@@ -53,7 +53,6 @@
   .c.bl{bottom:6px;left:6px;border-bottom:1px solid rgba(0,150,255,0.5);border-left:1px solid rgba(0,150,255,0.5)}
   .c.br{bottom:6px;right:6px;border-bottom:1px solid rgba(0,150,255,0.5);border-right:1px solid rgba(0,150,255,0.5)}
 
-  /* LAYOUT — gráfico ancorado em right:0, esquerda ocupa o resto */
   .layout {
     position: relative;
     z-index: 2;
@@ -61,27 +60,35 @@
     height: 480px;
   }
 
-  /* ═══ CHARTS ANCORADOS NA DIREITA ═══ */
+  /* ═══ CHARTS — ancorados em right:0, com ESCALA ESCONDIDA ═══ */
   .right {
     position: absolute;
-    right: 0;          /* COLA NA BORDA DIREITA */
+    right: 0;
     top: 0;
-    width: 650px;
+    width: 670px;
     height: 480px;
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
   }
 
   .chart-block {
-    width: 650px;
+    width: 670px;
     height: 240px;
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
   }
 
   .chart-block:first-child {
     border-bottom: 1px solid rgba(0,100,200,0.1);
+  }
+
+  /* MÁSCARA pra esconder a escala de preço da direita do TradingView */
+  .chart-mask {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 0px;
+    background: #000;
+    z-index: 5;
+    pointer-events: none;
   }
 
   .chart-tag {
@@ -108,24 +115,24 @@
   }
 
   iframe {
-    width: 650px;
+    width: 670px;
     height: 240px;
     border: none;
     display: block;
     background: #000;
   }
 
-  /* ═══ LEFT — ocupa de 0 até 310px (960 - 650 = 310) ═══ */
+  /* ═══ LEFT — 290px (960 - 670 = 290) ═══ */
   .left {
     position: absolute;
     left: 0; top: 0;
-    width: 310px;
+    width: 290px;
     height: 480px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 18px;
+    padding: 10px 14px;
     border-right: 1px solid rgba(0,100,200,0.2);
   }
 
@@ -135,20 +142,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 4px;
   }
 
   .weather-row1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .w-icon { font-size: 42px; line-height: 1; }
+  .w-icon { font-size: 38px; line-height: 1; }
 
   .w-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 50px;
+    font-size: 44px;
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 15px rgba(0,150,255,0.6);
@@ -156,62 +164,62 @@
   }
 
   .w-desc {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 300;
     color: #fff;
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-top: 4px;
+    margin-top: 3px;
     text-align: center;
   }
 
-  /* FORECAST */
   .forecast {
     width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
+    margin-top: 6px;
   }
 
   .fc-day {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 2px;
   }
 
   .fc-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #fff;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  .fc-icon { font-size: 28px; line-height: 1.2; }
+  .fc-icon { font-size: 24px; line-height: 1.2; }
 
   .fc-temp {
     font-family: 'Orbitron', monospace;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
   }
 
-  /* DIVIDER */
-  .div {
+  /* CLOCK */
+  .clock-section {
     width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,150,255,0.35), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  /* CLOCK */
   .time {
     font-family: 'Orbitron', monospace;
-    font-size: 88px;
+    font-size: 78px;
     font-weight: 900;
     color: #fff;
     line-height: 1;
-    letter-spacing: -4px;
+    letter-spacing: -3px;
     text-shadow: 0 0 25px rgba(0,150,255,0.9), 0 0 60px rgba(0,100,200,0.4);
   }
 
@@ -221,10 +229,10 @@
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.05} }
 
-  .date-block { text-align: center; }
+  .date-block { text-align: center; margin-top: 2px; }
 
   .date-text {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 400;
     color: #fff;
     letter-spacing: 2px;
@@ -232,29 +240,31 @@
   }
 
   .day-text {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 200;
     color: rgba(255,255,255,0.45);
     letter-spacing: 4px;
     text-transform: uppercase;
-    margin-top: 2px;
+    margin-top: 1px;
   }
 
-  /* PRICES — bem maiores */
+  /* PRICES — bem maiores, mas compactos verticalmente */
   .prices {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    margin-bottom: 4px;
   }
 
   .price-card {
     background: rgba(0,40,90,0.22);
     border: 1px solid rgba(0,100,200,0.2);
-    padding: 10px 14px;
+    padding: 6px 12px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     position: relative;
   }
 
@@ -266,32 +276,37 @@
     background: linear-gradient(transparent, rgba(0,150,255,0.7), transparent);
   }
 
+  .price-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+
   .coin-symbol {
     font-family: 'Orbitron', monospace;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: 4px;
-    margin-bottom: 3px;
+    letter-spacing: 3px;
   }
 
   .coin-price {
     font-family: 'Orbitron', monospace;
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 900;
     color: #fff;
     text-shadow: 0 0 12px rgba(0,150,255,0.4);
     line-height: 1;
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
   }
 
   .coin-change {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 1px;
-    margin-top: 6px;
-    padding: 4px 10px;
-    display: inline-block;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    white-space: nowrap;
   }
 
   .coin-change.up { color:#00e5a0; background:rgba(0,229,160,0.1); border:1px solid rgba(0,229,160,0.3); }
@@ -311,74 +326,81 @@
   <!-- LEFT -->
   <div class="left">
 
-    <div class="weather-now">
-      <div class="weather-row1">
-        <span class="w-icon" id="w-icon">⛅</span>
-        <span class="w-temp" id="w-temp">--°</span>
+    <!-- TOPO: clima + previsão -->
+    <div style="width:100%;">
+      <div class="weather-now">
+        <div class="weather-row1">
+          <span class="w-icon" id="w-icon">⛅</span>
+          <span class="w-temp" id="w-temp">--°</span>
+        </div>
+        <div class="w-desc" id="w-desc">carregando</div>
       </div>
-      <div class="w-desc" id="w-desc">carregando</div>
+
+      <div class="forecast">
+        <div class="fc-day">
+          <span class="fc-name" id="fc0-name">---</span>
+          <span class="fc-icon" id="fc0-icon">⛅</span>
+          <span class="fc-temp" id="fc0-temp">--°</span>
+        </div>
+        <div class="fc-day">
+          <span class="fc-name" id="fc1-name">---</span>
+          <span class="fc-icon" id="fc1-icon">⛅</span>
+          <span class="fc-temp" id="fc1-temp">--°</span>
+        </div>
+        <div class="fc-day">
+          <span class="fc-name" id="fc2-name">---</span>
+          <span class="fc-icon" id="fc2-icon">⛅</span>
+          <span class="fc-temp" id="fc2-temp">--°</span>
+        </div>
+      </div>
     </div>
 
-    <div class="forecast">
-      <div class="fc-day">
-        <span class="fc-name" id="fc0-name">---</span>
-        <span class="fc-icon" id="fc0-icon">⛅</span>
-        <span class="fc-temp" id="fc0-temp">--°</span>
+    <!-- MEIO: relógio -->
+    <div class="clock-section">
+      <div class="time">
+        <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
       </div>
-      <div class="fc-day">
-        <span class="fc-name" id="fc1-name">---</span>
-        <span class="fc-icon" id="fc1-icon">⛅</span>
-        <span class="fc-temp" id="fc1-temp">--°</span>
-      </div>
-      <div class="fc-day">
-        <span class="fc-name" id="fc2-name">---</span>
-        <span class="fc-icon" id="fc2-icon">⛅</span>
-        <span class="fc-temp" id="fc2-temp">--°</span>
+      <div class="date-block">
+        <div class="date-text" id="date">01 JAN 2026</div>
+        <div class="day-text" id="day">SEGUNDA</div>
       </div>
     </div>
 
-    <div class="div"></div>
-
-    <div class="time">
-      <span id="h">00</span><span class="colon">:</span><span id="m">00</span>
-    </div>
-    <div class="date-block">
-      <div class="date-text" id="date">01 JAN 2026</div>
-      <div class="day-text" id="day">SEGUNDA</div>
-    </div>
-
-    <div class="div"></div>
-
+    <!-- BAIXO: preços -->
     <div class="prices">
       <div class="price-card">
-        <span class="coin-symbol">BTC</span>
-        <span class="coin-price" id="btc-p">---</span>
+        <div class="price-left">
+          <span class="coin-symbol">BTC</span>
+          <span class="coin-price" id="btc-p">---</span>
+        </div>
         <span class="coin-change loading" id="btc-c">--</span>
       </div>
       <div class="price-card">
-        <span class="coin-symbol">ETH</span>
-        <span class="coin-price" id="eth-p">---</span>
+        <div class="price-left">
+          <span class="coin-symbol">ETH</span>
+          <span class="coin-price" id="eth-p">---</span>
+        </div>
         <span class="coin-change loading" id="eth-c">--</span>
       </div>
     </div>
 
   </div>
 
-  <!-- RIGHT: GRÁFICOS ancorados em right:0 -->
+  <!-- RIGHT -->
   <div class="right">
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">BTCUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:BTCUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
     <div class="chart-block">
       <div class="chart-tag">
         <span class="tag-symbol">ETHUSDT</span>
         <span class="tag-tf">1H</span>
       </div>
-      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
+      <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE:ETHUSDT&interval=60&theme=dark&style=1&hide_side_toolbar=1&hide_top_toolbar=1&hide_legend=0&save_image=0&calendar=0&news=0" allowtransparency="true"></iframe>
     </div>
   </div>
 
