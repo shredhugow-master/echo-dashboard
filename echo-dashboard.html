@@ -80,7 +80,7 @@
   .date-block{text-align:center;margin-top:2px;}
   /* 1. DATA MAIOR */
   .date-text{font-size:20px;font-weight:600;color:#fff;letter-spacing:2px;text-transform:uppercase;}
-  .day-text{font-size:11px;font-weight:200;color:rgba(255,255,255,0.45);letter-spacing:4px;text-transform:uppercase;margin-top:2px;}
+  .day-text{font-size:13px;font-weight:600;color:#ffffff;letter-spacing:4px;text-transform:uppercase;margin-top:2px;}
 
   .prices{width:100%;display:flex;flex-direction:column;gap:6px;margin-bottom:4px;}
   .price-card{background:rgba(0,40,90,0.22);border:1px solid rgba(0,100,200,0.2);padding:6px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative;}
@@ -88,7 +88,7 @@
   .price-left{display:flex;flex-direction:column;align-items:flex-start;gap:1px;}
   .coin-symbol{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#fff;letter-spacing:3px;}
   /* 3. PREÇO EM EXO 2, LEVEMENTE MAIOR */
-  .coin-price{font-family:'Exo 2',sans-serif;font-size:32px;font-weight:700;color:#fff;text-shadow:0 0 12px rgba(0,150,255,0.4);line-height:1;letter-spacing:-0.5px;}
+  .coin-price{font-family:'Exo 2',sans-serif;font-size:36px;font-weight:700;color:#fff;text-shadow:0 0 12px rgba(0,150,255,0.4);line-height:1;letter-spacing:-0.5px;}
   .coin-change{font-size:14px;font-weight:700;letter-spacing:0.5px;padding:4px 8px;white-space:nowrap;}
   .coin-change.up{color:#00e5a0;background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);}
   .coin-change.down{color:#ff4560;background:rgba(255,69,96,0.1);border:1px solid rgba(255,69,96,0.3);}
@@ -398,7 +398,7 @@
 
   updateClock(); fetchPrices(); fetchWeather(); fetchFearGreed();
   setInterval(updateClock,1000);
-  setInterval(fetchPrices,60000);
+  setInterval(fetchPrices,30000);
   setInterval(fetchWeather,600000);
   setInterval(fetchFearGreed,300000);
 </script>
